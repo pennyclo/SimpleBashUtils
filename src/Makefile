@@ -1,10 +1,10 @@
 CC = gcc
 CFLAGS = -Wextra -Wall -std=c11
 BUILD = ../build/
-DIRCAT = /cat_util/
+DIRCAT = cat_util/
 EXCRETION = main
 FLAGS_TEST = -b
-TEST_PATH = test/test.txt
+TEST_PATH = Makefile Makefile
 
 all:
 
@@ -26,5 +26,8 @@ clean:
 
 rebuild: clean install
 
-val:
+val: main
 	valgrind --tool=memcheck --leak-check=yes  ./$(BUILD)$(EXCRETION) $(FLAGS_TEST) $(TEST_PATH)
+
+cpp:
+	cppcheck --enable=all --suppress=missingIncludeSystem *.c

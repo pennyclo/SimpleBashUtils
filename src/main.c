@@ -1,140 +1,161 @@
 #include "cat_util/cat.h"
 
-char** parcer(int argc, char** argv, int* num_files);
-void reader(char* file_path, arguments *argument);
+data_t parser(int argc, char** argv);
+void reader(data_t *data, int file_count);
 char* strdup(const char* str);
+void destroy_data(data_t *data);
 
-int main(int argc, char** argv) {
-    int num_files;
-    char** file = parcer(argc, argv, &num_files);
-
-    // for(int i = 0; i < num_files; i++) {
-    //     reader(file[i]);
-    // }
+int main(int argc, char **argv) {
+    data_t data = parser(argc, argv);
     
-    for(int i = 0; i < num_files; i++) {
-        free(file[i]);
+    for (int i = 0; i < data.num_files && !data.invalid; i++) {
+        reader(&data, i);
     }
 
-    free(file);
+    destroy_data(&data);
 
     return 0;
 }
 
-char** parcer(int argc, char** argv, int* num_files) {
-    arguments argument;
+data_t parser(int argc, char **argv) {
+    data_t data;
+    data.opt.b = data.opt.E = data.opt.n = data.opt.s = data.opt.T = data.opt.v = 0;
+    data.invalid = VALID;
+    data.file_paths = NULL;
+    data.num_line = 1;
+    data.num_files = 0;
     int opt;
-    *num_files = 0;
-    char **file_paths = NULL;
 
-    while((opt = getopt(argc, argv, "b:e:E:n:s:t:T:v:A:")) != -1) {
+    static struct option long_options[] = {
+        {"show-all", no_argument, 0, 'A'},
+        {"number-nonblank", no_argument, 0, 'b'},
+        {"show-ends", no_argument, 0, 'E'},
+        {"number", no_argument, 0, 'n'},
+        {"squeeze-blank", no_argument, 0, 's'},
+        {"show-tabs", no_argument, 0, 'T'},
+        {"show-nonprinting", no_argument, 0, 'v'},
+        {0, 0, 0, 0}
+    };
+
+    while((opt = getopt_long(argc, argv, "beEnstTvA", long_options, NULL)) != -1) {
         switch (opt) {
             case 'b':
-                argument.b = 1;
+                data.opt.b = 1;
                 break;
             case 'e':
-                argument.E = 1;
-                argument.v = 1;
+                data.opt.E = 1;
+                data.opt.v = 1;
                 break;
             case 'E':
-                argument.E = 1;
+                data.opt.E = 1;
                 break;
             case 'n':
-                argument.n = 1;
+                data.opt.n = 1;
                 break;
             case 's':
-                argument.s = 1;
+                data.opt.s = 1;
                 break;
             case 't':
-                argument.T = 1;
-                argument.v = 1;
+                data.opt.T = 1;
+                data.opt.v = 1;
                 break;
             case 'T':
-                argument.T = 1;
+                data.opt.T = 1;
                 break;
             case 'v':
-                argument.v = 1;
+                data.opt.v = 1;
                 break;
             case 'A':
-                argument.v = 1;
-                argument.E = 1;
-                argument.T = 1;
+                data.opt.v = 1;
+                data.opt.E = 1;
+                data.opt.T = 1;
                 break;
             case '?':
-                fprintf(stderr, "Unknown options <-%c>", opt); // if this option does not exist
-                exit(1);
+                data.invalid = UNKNOWN_OPT;
             default:
                 //Just printf files.
         }
-        
-        char **new_file_path = realloc(file_paths, sizeof(char *) * (*num_files + 1));
-        if(!new_file_path) {
-            printf("Error allocated file path");
-            exit(1);
-        }
-
-        file_paths = new_file_path;
-
-        file_paths[*num_files] = strdup(optarg);
-        if(!file_paths[*num_files]) {
-            printf("Error allocated new file path");
-            exit(1);
-        }
-
-        *num_files += 1;
-        
-        reader(file_paths[0], &argument);
     }
 
-    return file_paths;
-}
+    for (int index = optind; index < argc && !data.invalid; index++) {
+        data.file_paths = realloc(data.file_paths, sizeof(char *) * (data.num_files + 1));
+        if (!data.file_paths) {
+            data.invalid = FILEPATH_ALLOC;
+        }
 
-void reader(char* file_path, arguments *argument) {
-    FILE *file = fopen(file_path, "r");
-    if(file) {
-        fseek(file, 0, SEEK_END);
-        long file_size = ftell(file);
-        fseek(file, 0, SEEK_SET);
-
-        char* buffer = (char *) malloc(file_size + 1);
-        if(!buffer) {
-            printf("Error allocated buffer");
-            fclose(file);
-            exit(1);
-        } else {
-            size_t bytes_read = fread(buffer, 1, file_size, file);
-            if((long)bytes_read != file_size) {
-                printf("Error reading files");
-                free(buffer);
-                fclose(file);
-                exit(1);
-            } else {
-                int i = 0;
-                int num_line = 1;
-                buffer[file_size] = '\0';
-                // printf("%s", buffer);
-                while(buffer[i] != '\0') {
-                    if(argument->n) {
-                        if(num_line < 10) {
-                            printf(" ");
-                        }
-                        printf("     %d  ", num_line);
-                    }
-                    while(buffer[i] != '\n' && buffer[i] != '\0') {
-                        printf("%c", buffer[i]);
-                        i++;
-                    }
-                    i++;
-                    num_line++;
-                    printf("\n");
-                }
-                free(buffer);
-                fclose(file);
+        if(!data.invalid) {
+            data.file_paths[data.num_files] = strdup(argv[index]);
+            if (!data.file_paths[data.num_files]) {
+                data.invalid = FILEPATH_ALLOC;
             }
         }
-    } else {
-        printf("cat: %s: No such file or directory\n", optarg);
+
+        data.num_files++;
     }
+
+    return data;
+}
+
+void reader(data_t *data, int file_count) {
+    size_t bytes_read;
+    FILE *file = fopen(data->file_paths[file_count], "r");
+    if(!file) {
+        fprintf(stderr, "cat: %s: No such file or directory\n", optarg);
+        return;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    char* buffer = (char *)malloc(file_size + 1);
+    if(!buffer) {
+        data->invalid = BUFFER_ALLOC;
+    } 
+
+    if(!data->invalid) {
+        bytes_read = fread(buffer, 1, file_size, file);
+        if((long)bytes_read != file_size) {
+            data->invalid = FILE_READ;
+        } 
+    }
+
+    if(!data->invalid) {
+        int i = 0;
+        buffer[file_size] = '\0';
+        while(i < file_size && buffer[i] != '\0') {
+            if(data->opt.b) {
+                if(!(i && buffer[i - 1] == '\n' && buffer[i] == '\n')) {
+                    if(file_count && i == 0) {
+                        data->num_line++;
+                    } else {
+                        if(data->num_line < 10) {
+                            printf(" ");
+                        }
+                        printf("     %d  ", data->num_line++);
+                    }
+                } 
+            } else if(data->opt.n) {
+                if(data->num_line < 10) {
+                    printf(" ");
+                }
+                printf("     %d  ", data->num_line++);
+            }
+            while(i < file_size && buffer[i] != '\n' && buffer[i] != '\0') {
+                printf("%c", buffer[i]);
+                i++;
+            }
+            i++;
+            if(i < file_size) {
+                printf("\n");
+            } else {
+                data->num_line--;
+            }
+        }
+    }
+
+    free(buffer);
+    fclose(file);
 }
 
 char* strdup(const char* str) {
@@ -145,4 +166,35 @@ char* strdup(const char* str) {
     }
     
     return new_str;
+}
+
+void destroy_data(data_t *data) {
+    if(data->file_paths) {
+        for(int i = 0; i < data->num_files; i++) {
+            if(data->file_paths[i]) {
+                free(data->file_paths[i]);
+            }
+        }
+
+        free(data->file_paths);
+    }
+
+    switch (data->invalid)
+    {
+    case UNKNOWN_OPT:
+        fprintf(stderr, "Unknown options. Only supported b,e,E,n,s,t,T,v,A\n");
+        break;
+    case FILEPATH_ALLOC:
+        fprintf(stderr, "Error allocating file path\n");
+        break;
+    case BUFFER_ALLOC:
+        fprintf(stderr, "Error allocated buffer\n");
+        break;
+    case FILE_READ:
+        fprintf(stderr, "Error reading files\n");
+        break;
+    
+    default:
+        break;
+    }
 }
