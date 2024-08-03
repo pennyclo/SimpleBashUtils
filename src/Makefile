@@ -2,9 +2,9 @@ CC = gcc
 CFLAGS = -Wextra -Wall -std=c11
 BUILD = ../build/
 DIRCAT = cat_util/
-EXCRETION = main
+EXCRETION = cat_util
 FLAGS_TEST = -b
-TEST_PATH = Makefile Makefile
+TEST_PATH = Makefile Makefile Makefile
 
 all:
 
@@ -26,7 +26,7 @@ clean:
 
 rebuild: clean install
 
-val: main
+val: cat_main
 	valgrind --tool=memcheck --leak-check=yes  ./$(BUILD)$(EXCRETION) $(FLAGS_TEST) $(TEST_PATH)
 
 cpp:

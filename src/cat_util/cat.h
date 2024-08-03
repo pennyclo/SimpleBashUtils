@@ -11,7 +11,8 @@ typedef enum {
     UNKNOWN_OPT,
     FILEPATH_ALLOC,
     BUFFER_ALLOC,
-    FILE_READ
+    FILE_READ,
+    MISS_FILE
 } errors_t;
 
 typedef struct {
@@ -21,12 +22,13 @@ typedef struct {
 typedef struct {
     options_t opt;
     char **file_paths;
+    char *buffer;
     int num_files;
     int num_line;
     errors_t invalid;
 } data_t;
 
-
-void optional_b (char *file_path);
+void optional_b (data_t *data, int ptr_symbol);
+void optional_n (data_t *data);
 
 #endif
