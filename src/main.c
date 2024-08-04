@@ -63,14 +63,27 @@ void reader(data_t *data) {
             optional_n(data);
         }
         while(i < lenght && data->buffer[i] != '\0' && data->buffer[i] != '\n') {
+            if(data->opt.T) {
+                optional_T(data, &i);
+            }
+
             printf("%c", data->buffer[i]);
             i++;
         }
 
 
         if(i < lenght) {
-            printf("\n");
-            i++;
+            if(data->opt.E) {
+                optional_E();
+            }
+
+            // if(data->opt.s) {
+            //     optional_s(data, &i);
+            // } else {
+                printf("\n");
+                i++;
+            // }
+
         } else {
             data->num_line--;
         }

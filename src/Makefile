@@ -3,8 +3,8 @@ CFLAGS = -Wextra -Wall -std=c11
 BUILD = ../build/
 DIRCAT = cat_util/
 EXCRETION = cat_util
-FLAGS_TEST = -b
-TEST_PATH = Makefile Makefile Makefile
+FLAGS_TEST = -sEn
+TEST_PATH = Makefile
 
 all:
 

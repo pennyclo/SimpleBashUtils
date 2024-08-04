@@ -13,3 +13,29 @@ void optional_b (data_t *data, int ptr_symbol) {
 void optional_n (data_t *data) {
     printf("%6d  ", data->num_line++);
 }
+
+void optional_E () {
+    printf("$");
+}
+
+void optional_T (data_t *data, int *ptr_symbol) {
+    if(data->buffer[*ptr_symbol] == '\t') {
+        printf("^I");
+        (*ptr_symbol)++;
+    }
+
+}
+
+// void optional_s (data_t *data, int *ptr_symbol) {
+//     int tmp = 0;
+//     while(data->buffer[*ptr_symbol] == '\n') {
+//         (*ptr_symbol)++;
+//         tmp++;
+//     }
+
+//     if(tmp > 1) {
+//         printf("\n");
+//     }
+
+//     printf("\n");
+// }
