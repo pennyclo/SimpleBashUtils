@@ -26,16 +26,15 @@ void optional_T (data_t *data, int *ptr_symbol) {
 
 }
 
-// void optional_s (data_t *data, int *ptr_symbol) {
-//     int tmp = 0;
-//     while(data->buffer[*ptr_symbol] == '\n') {
-//         (*ptr_symbol)++;
-//         tmp++;
-//     }
+void optional_s (data_t *data, int *ptr_symbol) {
+    int tmp = 0;
+    while(data->buffer[*ptr_symbol] == '\n') {
+        (*ptr_symbol)++;
+        tmp++;
+    }
 
-//     if(tmp > 1) {
-//         printf("\n");
-//     }
-
-//     printf("\n");
-// }
+    if(tmp >= 1) {
+        printf("%6d", data->num_line++);
+        printf("\n");
+    }
+}

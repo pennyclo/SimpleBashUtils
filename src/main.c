@@ -76,13 +76,13 @@ void reader(data_t *data) {
             if(data->opt.E) {
                 optional_E();
             }
+            
+            printf("\n");
+            i++;
 
-            // if(data->opt.s) {
-            //     optional_s(data, &i);
-            // } else {
-                printf("\n");
-                i++;
-            // }
+            if(data->opt.s) {
+                optional_s(data, &i);
+            }
 
         } else {
             data->num_line--;
