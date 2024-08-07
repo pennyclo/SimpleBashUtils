@@ -38,3 +38,14 @@ void optional_s (data_t *data, int *ptr_symbol) {
         printf("\n");
     }
 }
+
+void optional_v (data_t *data, int *ptr_symbol) {
+    if(data->buffer[*ptr_symbol] == '\t' || data->buffer[*ptr_symbol] == '\n') {
+    } else if(data->buffer[*ptr_symbol] > 0 && data->buffer[*ptr_symbol] < 32) {
+        printf("^");
+        data->buffer[*ptr_symbol] += 64;
+    } else if(data->buffer[*ptr_symbol] == 127) {
+        printf("^");
+        data->buffer[*ptr_symbol] = '?';
+    }
+}

@@ -33,5 +33,6 @@ void optional_n (data_t *data);
 void optional_E ();
 void optional_T (data_t *data, int *ptr_symbol);
 void optional_s (data_t *data, int *ptr_symbol);
+void optional_v (data_t *data, int *ptr_symbol);
 
 #endif

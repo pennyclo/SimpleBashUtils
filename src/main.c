@@ -47,7 +47,7 @@ data_t parser(int argc, char **argv) {
         switch_parser(opt, &data);
     }
 
-    alloc_filepaths (&data, argc, argv);
+    alloc_filepaths(&data, argc, argv);
 
     return data;
 }
@@ -67,6 +67,10 @@ void reader(data_t *data) {
                 optional_T(data, &i);
             }
 
+            if(data->opt.v) {
+                optional_v(data, &i);
+            }
+            
             printf("%c", data->buffer[i]);
             i++;
         }
