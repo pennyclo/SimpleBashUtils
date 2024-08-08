@@ -1,5 +1,5 @@
-#ifndef CAT_H
-#define CAT_H
+#ifndef PARSER_ARGS_H
+#define PARSER_ARGS_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,11 +28,11 @@ typedef struct {
     errors_t invalid;
 } data_t;
 
-void optional_b (data_t *data, int ptr_symbol);
-void optional_n (data_t *data);
-void optional_E ();
-void optional_T (data_t *data, int *ptr_symbol);
-void optional_s (data_t *data, int *ptr_symbol);
-void optional_v (data_t *data, int *ptr_symbol);
+
+data_t parser(int argc, char** argv);
+void switch_parser(int opt, data_t *data);
+void alloc_filepaths (data_t *data, int argc, char **argv);
+char *write_buffer(data_t *data, int file_count);
+char* strdup(const char* str);
 
 #endif

@@ -1,4 +1,4 @@
-#include "cat.h"
+#include "cat_flags.h"
 
 void optional_b (data_t *data, int ptr_symbol) {
     if(!(ptr_symbol && data->buffer[ptr_symbol - 1] == '\n' && data->buffer[ptr_symbol] == '\n')) {
@@ -39,7 +39,7 @@ void optional_s (data_t *data, int *ptr_symbol) {
     }
 }
 
-void optional_v (data_t *data, int *ptr_symbol) {
+void optional_v (data_t *data, const int *ptr_symbol) {
     if(data->buffer[*ptr_symbol] == '\t' || data->buffer[*ptr_symbol] == '\n') {
     } else if(data->buffer[*ptr_symbol] > 0 && data->buffer[*ptr_symbol] < 32) {
         printf("^");
