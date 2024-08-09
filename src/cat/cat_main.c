@@ -68,10 +68,12 @@ void destroy_data(data_t *data) {
         for(int i = 0; i < data->num_files; i++) {
             if(data->file_paths[i]) {
                 free(data->file_paths[i]);
+                data->file_paths[i] = NULL;
             }
         }
 
         free(data->file_paths);
+        data->file_paths = NULL;
     }
 
     switch (data->invalid) {
