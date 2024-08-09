@@ -1,5 +1,9 @@
 #include "parser_args.h"
 
+/// @note Зачем long в проекте? Отсюда приведения типов. Если итерируешь массив, то используй size_t
+/// @note #define __SIZE_TYPE__ long unsigned int
+/// @note typedef __SIZE_TYPE__ size_t;
+
 data_t parser(int argc, char **argv) {
     data_t data;
     data.opt.b = data.opt.E = data.opt.n = data.opt.s = data.opt.T = data.opt.v = 0;
@@ -63,14 +67,15 @@ void switch_parser(int opt, data_t *data) {
             data->opt.T = 1;
             break;
         case '?':
-            data->invalid = UNKNOWN_OPT;
+            break;
         default:
-            //Just printf files.
+            data->invalid = UNKNOWN_OPT;
     }
 }
 
+
 char *write_buffer(data_t *data, int file_count) {
-    char* buffer = NULL;
+    char *buffer = NULL;
     FILE *file = fopen(data->file_paths[file_count], "r");
     if(!file) {
         fprintf(stderr, "cat: %s: No such file or directory\n", data->file_paths[file_count]);
@@ -87,8 +92,7 @@ char *write_buffer(data_t *data, int file_count) {
         } 
 
         if(!data->invalid) {
-            size_t bytes_read;
-            bytes_read = fread(buffer, 1, file_size, file);
+            size_t bytes_read = fread(buffer, 1, file_size, file);
             if((long)bytes_read != file_size) {
                 data->invalid = FILE_READ;
             } 
@@ -106,7 +110,7 @@ char *write_buffer(data_t *data, int file_count) {
 
 void alloc_filepaths (data_t *data, int argc, char **argv) {
     for (int index = optind; index < argc && !data->invalid; index++) {
-        data->file_paths = realloc(data->file_paths, sizeof(char *) * (data->num_files + 1));
+        data->file_paths = (сhar **)realloc(data->file_paths, sizeof(char *) * (data->num_files + 1));
         if (!data->file_paths) {
             data->invalid = FILEPATH_ALLOC;
         }
@@ -124,10 +128,13 @@ void alloc_filepaths (data_t *data, int argc, char **argv) {
 
 char* strdup(const char* str) {
     size_t length = strlen(str) + 1;
-    char* new_str = malloc(length);
-    if (new_str) {
-        memcpy(new_str, str, length);
-    }
+    char* new_str = (char *)malloc(length * sizeof(char));
+    
+    if (!new_str) {
+        /// Отследить
+    } else {
+       memcpy(new_str, str, length);
+    }    
     
     return new_str;
 }
