@@ -21,24 +21,26 @@ void optional_E () {
 void optional_T (data_t *data, int *ptr_symbol) {
     if(data->buffer[*ptr_symbol] == '\t') {
         printf("^I");
-        (*ptr_symbol)++;
+        ++(*ptr_symbol);
     }
 
 }
 
+/// @todo ptr_symbol супер непонятное название (хотя бы current_symbol) какой-то
 void optional_s (data_t *data, int *ptr_symbol) {
-    int tmp = 0;
+    int tmp = 0; // счетчик называет либо cnt, либо count(counter)
     while(data->buffer[*ptr_symbol] == '\n') {
-        (*ptr_symbol)++;
-        tmp++;
+        ++(*ptr_symbol);
+        ++tmp;
     }
 
     if(tmp >= 1) {
-        printf("%6d", data->num_line++);
-        printf("\n");
+        printf("%6d\n", data->num_line++);
     }
 }
 
+/// @todo Убери магические числа
+/// @note В конце файла должна быть пустая строка
 void optional_v (data_t *data, const int *ptr_symbol) {
     if(data->buffer[*ptr_symbol] == '\t' || data->buffer[*ptr_symbol] == '\n') {
     } else if(data->buffer[*ptr_symbol] > 0 && data->buffer[*ptr_symbol] < 32) {
