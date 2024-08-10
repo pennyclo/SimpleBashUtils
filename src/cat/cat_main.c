@@ -8,8 +8,8 @@ int main(int argc, char **argv) {
     data_t data = parser(argc, argv);
 
     for (int i = 0; i < data.num_files && !data.invalid; i++) {
-        data.buffer = write_buffer(&data, i);
-        if(!data.invalid) {
+        write_buffer(&data, i);
+        if(!data.invalid && data.buffer != 0) {
             reader(&data);
         }
     }

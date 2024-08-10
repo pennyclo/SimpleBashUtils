@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Werror -Wextra -Wall -std=c11
 EXCRETION = s21_cat
 FLAGS_TEST = -v
-TEST_PATH = test/test test/test.txt 
+TEST_PATH = test/test test/test.txt
 
 all:
 

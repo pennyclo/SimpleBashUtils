@@ -32,7 +32,7 @@ typedef struct {
 data_t parser(int argc, char** argv);
 void switch_parser(int opt, data_t *data);
 void alloc_filepaths (data_t *data, int argc, char **argv);
-char *write_buffer(data_t *data, int file_count);
+void write_buffer(data_t *data, int file_count);
 char* strdup(const char* str);
 
 #endif

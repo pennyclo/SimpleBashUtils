@@ -69,39 +69,36 @@ void switch_parser(int opt, data_t *data) {
     }
 }
 
-char *write_buffer(data_t *data, int file_count) {
-    char* buffer = NULL;
+void write_buffer(data_t *data, int file_count) {
+    data->buffer = NULL;
     FILE *file = fopen(data->file_paths[file_count], "r");
     if(!file) {
         fprintf(stderr, "cat: %s: No such file or directory\n", data->file_paths[file_count]);
+        return;
     }
 
-    if(file) {
-        fseek(file, 0, SEEK_END);
-        long file_size = ftell(file);
-        fseek(file, 0, SEEK_SET);
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
 
-        buffer = (char *)malloc(file_size + 1);
-        if(!buffer) {
-            data->invalid = BUFFER_ALLOC;
+    data->buffer = (char *)malloc(file_size + 1);
+    if(!data->buffer) {
+        data->invalid = BUFFER_ALLOC;
+    } 
+
+    if(!data->invalid) {
+        size_t bytes_read;
+        bytes_read = fread(data->buffer, 1, file_size, file);
+        if((long)bytes_read != file_size) {
+            data->invalid = FILE_READ;
         } 
-
-        if(!data->invalid) {
-            size_t bytes_read;
-            bytes_read = fread(buffer, 1, file_size, file);
-            if((long)bytes_read != file_size) {
-                data->invalid = FILE_READ;
-            } 
-        }
-        
-        if(!data->invalid) {
-            buffer[file_size] = '\0';
-        }
-
-        fclose(file);
+    }
+    
+    if(!data->invalid) {
+        data->buffer[file_size] = '\0';
     }
 
-    return buffer;
+    fclose(file);
 }
 
 void alloc_filepaths (data_t *data, int argc, char **argv) {
