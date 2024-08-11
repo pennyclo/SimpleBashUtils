@@ -25,6 +25,7 @@ typedef struct {
     char *buffer;
     int num_files;
     int num_line;
+    int lenght;
     errors_t invalid;
 } data_t;
 

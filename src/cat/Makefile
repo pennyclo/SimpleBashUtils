@@ -1,8 +1,10 @@
+SHELL := /bin/bash
 CC = gcc
-CFLAGS = -Werror -Wextra -Wall -std=c11
+CFLAGS =-Wextra -Wall -std=c11 -g
 EXCRETION = s21_cat
-FLAGS_TEST = -v
-TEST_PATH = test/test test/test.txt
+FLAGS_TEST = -n
+TEST_PATH = tests/tests_files/test_1_cat.txt tests/tests_files/nofile.txt tests/tests_files/test_2_cat.txt
+FILE = test/test.txt
 
 all:
 
@@ -20,8 +22,11 @@ parser_args:
 cat_flags:
 	$(CC) $(CFLAGS) -c cat_flags.c
 
-clean:
-	rm -rf s21_cat *.o
+clean: clean.o
+	rm -rf $(EXCRETION)
+
+clean.o:
+	rm -rf *.o
 
 rebuild: clean install
 
@@ -30,3 +35,10 @@ val: s21_cat
 
 cpp:
 	cppcheck --enable=all --suppress=missingIncludeSystem *.c
+
+
+test:
+	bash tests_cat.sh > 3.txt
+	cat 3.txt
+	rm 3.txt
+	# bash analysis_test_cat.sh

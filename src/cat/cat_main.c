@@ -1,16 +1,17 @@
 #include "parser_args.h"
 #include "cat_flags.h"
 
-void reader(data_t *data);
+void reader(data_t *data, int *cnt_lines);
 void destroy_data(data_t *data);
 
 int main(int argc, char **argv) {
     data_t data = parser(argc, argv);
+    int cnt_lines = 1;
 
     for (int i = 0; i < data.num_files && !data.invalid; i++) {
         write_buffer(&data, i);
-        if(!data.invalid && data.buffer != 0) {
-            reader(&data);
+        if(!data.invalid && data.buffer) {
+            reader(&data, &cnt_lines);
         }
     }
 
@@ -19,45 +20,29 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void reader(data_t *data) {
+void reader(data_t *data, int *cnt_lines) {
     int i = 0;
-    long lenght = strlen(data->buffer);
 
-    while(i < lenght) {
-        if(data->opt.b) {
-            optional_b(data, i);
-        } else if(data->opt.n) {
-            optional_n(data);
-        }
-        while(i < lenght && data->buffer[i] != '\0' && data->buffer[i] != '\n') {
-            if(data->opt.T) {
-                optional_T(data, &i);
-            }
-
-            if(data->opt.v) {
-                optional_v(data, &i);
+    while(i < data->lenght) {
+        if(*cnt_lines) {
+            if(data->opt.b) {
+                optional_b(data, &i);
+            } else if(data->opt.n) {
+                optional_n(data);
             }
             
-            printf("%c", data->buffer[i]);
-            i++;
+            *cnt_lines = 0;
         }
 
-
-        if(i < lenght) {
-            if(data->opt.E) {
-                optional_E();
-            }
-            
-            printf("\n");
-            i++;
-
-            if(data->opt.s) {
-                optional_s(data, &i);
-            }
-
-        } else {
-            data->num_line--;
+        if(data->buffer[i] == '\n') {
+            data->num_line++;
+            *cnt_lines = 1;
         }
+        
+
+        printf("%c", data->buffer[i]);
+        i++;
+        
     }
 
     free(data->buffer);

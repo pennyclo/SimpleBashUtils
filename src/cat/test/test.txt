@@ -1,4 +1,0 @@
-Hello	World
-This is atest file
-with somenon-printablecharacters
-and a bell sound: 

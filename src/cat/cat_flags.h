@@ -3,7 +3,7 @@
 
 #include "parser_args.h"
 
-void optional_b (data_t *data, int ptr_symbol);
+void optional_b (data_t *data, int *cnt_symbol);
 void optional_n (data_t *data);
 void optional_E ();
 void optional_T (data_t *data, int *ptr_symbol);

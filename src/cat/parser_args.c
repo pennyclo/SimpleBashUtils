@@ -78,24 +78,24 @@ void write_buffer(data_t *data, int file_count) {
     }
 
     fseek(file, 0, SEEK_END);
-    long file_size = ftell(file);
+    data->lenght = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    data->buffer = (char *)malloc(file_size + 1);
+    data->buffer = (char *)malloc(data->lenght + 1);
     if(!data->buffer) {
         data->invalid = BUFFER_ALLOC;
     } 
 
     if(!data->invalid) {
         size_t bytes_read;
-        bytes_read = fread(data->buffer, 1, file_size, file);
-        if((long)bytes_read != file_size) {
+        bytes_read = fread(data->buffer, 1, data->lenght, file);
+        if((long)bytes_read != data->lenght) {
             data->invalid = FILE_READ;
         } 
     }
     
     if(!data->invalid) {
-        data->buffer[file_size] = '\0';
+        data->buffer[data->lenght] = '\0';
     }
 
     fclose(file);
