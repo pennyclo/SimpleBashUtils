@@ -34,6 +34,12 @@ void reader(data_t *data, int *cnt_lines) {
             *cnt_lines = 0;
         }
 
+        if(data->opt.E) {
+            if(data->buffer[i] == '\n') {
+                optional_E();
+            }
+        }
+
         if(data->buffer[i] == '\n') {
             *cnt_lines = 1;
         }
