@@ -35,7 +35,6 @@ void reader(data_t *data, int *cnt_lines) {
         }
 
         if(data->buffer[i] == '\n') {
-            data->num_line++;
             *cnt_lines = 1;
         }
         
