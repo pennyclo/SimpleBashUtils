@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
         if(!data.invalid && data.buffer) {
             reader(&data, &cnt_lines);
         }
+        free(data.buffer);
     }
 
     destroy_data(&data);
@@ -24,9 +25,13 @@ void reader(data_t *data, int *cnt_lines) {
     int i = 0;
 
     while(i < data->lenght) {
+        if (data->opt.s && data->buffer[i] == '\n') {
+            optional_s(data, &i);
+        }
+
         if(*cnt_lines) {
             if(data->opt.b) {
-                optional_b(data, &i);
+                optional_b(data, i);
             } else if(data->opt.n) {
                 optional_n(data);
             }
@@ -34,23 +39,22 @@ void reader(data_t *data, int *cnt_lines) {
             *cnt_lines = 0;
         }
 
+
         if(data->opt.E) {
-            if(data->buffer[i] == '\n') {
-                optional_E();
-            }
+            optional_E(data, i);
+        }
+
+        if(data->opt.T) {
+            optional_T(data, i);
         }
 
         if(data->buffer[i] == '\n') {
             *cnt_lines = 1;
         }
         
-
         printf("%c", data->buffer[i]);
         i++;
-        
     }
-
-    free(data->buffer);
 }
 
 void destroy_data(data_t *data) {
