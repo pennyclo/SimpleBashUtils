@@ -8,6 +8,6 @@ void optional_n(data_t *data);
 void optional_E(data_t *data, int cnt_symbol);
 void optional_T(data_t *data, int cnt_symbol);
 void optional_s(data_t *data, int *cnt_symbol);
-void optional_v(data_t *data, const int *ptr_symbol);
+void optional_v(data_t *data, int ptr_symbol);
 
 #endif

@@ -25,9 +25,6 @@ void reader(data_t *data, int *cnt_lines) {
     int i = 0;
 
     while(i < data->lenght) {
-        if (data->opt.s && data->buffer[i] == '\n') {
-            optional_s(data, &i);
-        }
 
         if(*cnt_lines) {
             if(data->opt.b) {
@@ -36,6 +33,10 @@ void reader(data_t *data, int *cnt_lines) {
                 optional_n(data);
             }
             
+            if (data->opt.s) {
+                optional_s(data, &i);
+            }
+
             *cnt_lines = 0;
         }
 
@@ -52,8 +53,13 @@ void reader(data_t *data, int *cnt_lines) {
             *cnt_lines = 1;
         }
         
+        if(data->opt.v) {
+            optional_v(data, i);
+        }
+
         printf("%c", data->buffer[i]);
         i++;
+
     }
 }
 

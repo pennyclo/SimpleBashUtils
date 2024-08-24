@@ -11,10 +11,10 @@ all:
 install: s21_cat
 
 s21_cat: main parser_args cat_flags
-	$(CC) $(CFLAGS) cat_main.o parser_args.o cat_flags.o -o s21_cat
+	$(CC) $(CFLAGS) main.o parser_args.o cat_flags.o -o s21_cat
 
 main:
-	$(CC) $(CFLAGS) -c cat_main.c
+	$(CC) $(CFLAGS) -c main.c
 
 parser_args:
 	$(CC) $(CFLAGS) -c parser_args.c
@@ -23,7 +23,7 @@ cat_flags:
 	$(CC) $(CFLAGS) -c cat_flags.c
 
 clean: clean.o
-	rm -rf $(EXCRETION)
+	rm -rf $(EXCRETION) analysis/*
 
 clean.o:
 	rm -rf *.o
@@ -38,7 +38,7 @@ cpp:
 
 
 test:
-	bash tests_cat.sh > 3.txt
-	cat 3.txt
-	rm 3.txt
+	bash tests_cat.sh
+	# cat 3.txt
+	# rm -rf 3.txt 
 	# bash analysis_test_cat.sh
