@@ -1,12 +1,13 @@
 SHELL := /bin/bash
 CC = gcc
-CFLAGS =-Wextra -Wall -std=c11 -g
+CFLAGS =-Wextra -Wall -pedantic -std=c11
 EXCRETION = s21_cat
-FLAGS_TEST = -n
+FLAGS_TEST = -n -b -s -v -T -E
 TEST_PATH = tests/tests_files/test_1_cat.txt tests/tests_files/nofile.txt tests/tests_files/test_2_cat.txt
 FILE = test/test.txt
+ALL_FILES = *.c *.h
 
-all:
+all: s21_cat clean.o
 
 install: s21_cat
 
@@ -39,6 +40,9 @@ cpp:
 
 test:
 	bash tests_cat.sh
-	# cat 3.txt
-	# rm -rf 3.txt 
-	# bash analysis_test_cat.sh
+
+clang_check:
+	clang-format -style=Google -n $(ALL_FILES)
+
+clang_edit:
+	clang-format -style=Google -i $(ALL_FILES)
