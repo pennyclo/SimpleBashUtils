@@ -75,8 +75,8 @@ void destroy_data(data_t *data) {
     case UNKNOWN_OPT:
       fprintf(
           stderr,
-          "Try 'cat --help' for more information.\n");  //точно также как и в
-                                                        //оригинальном cat.
+          "Try 'cat --help' for more information.\n");  // точно также как и в
+                                                        // оригинальном cat.
       break;
     case FILEPATH_ALLOC:
       fprintf(stderr, "Error allocating file path\n");
