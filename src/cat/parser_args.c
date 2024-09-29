@@ -1,7 +1,7 @@
 #include "parser_args.h"
 
 data_t parser(int argc, char **argv) {
-  data_t data = {.opt = {.b = 0, .E = 0, .n = 0, .s = 0, .T = 0, .v = 0}};
+  data_t data = {.opt = {0, 0, 0, 0, 0, 0}};
   data.invalid = VALID;
   data.file_paths = NULL;
   data.num_line = 1;
