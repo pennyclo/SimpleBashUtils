@@ -2,6 +2,7 @@
 #define PARCER_ARGS_H
 
 #include <getopt.h>
+#include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,8 +33,10 @@ typedef enum {
 typedef struct {
   options_t opt;
   errors_t invalid;
+  regex_t regex;
   int num_files;
-  char* pattern;
+  int num_pattern;
+  char** patterns;
   char** file_paths;
   int num_lines;
 } data_t;
@@ -41,6 +44,7 @@ typedef struct {
 data_t parser(int argc, char** argv);
 void switch_parser(int opt, data_t* data);
 void alloc_filepaths(data_t* data, int argc, char** argv);
+void alloc_parser(data_t* data, char* optarg);
 char* strdup(const char* str);
 
 #endif

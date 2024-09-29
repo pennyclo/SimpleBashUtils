@@ -1,21 +1,17 @@
 #include "parser_args.h"
 
 data_t parser(int argc, char **argv) {
-  data_t data = {.opt = {.e = 0,
-                         .i = 0,
-                         .v = 0,
-                         .c = 0,
-                         .l = 0,
-                         .n = 0,
-                         .h = 0,
-                         .s = 0,
-                         .f = 0,
-                         .o = 0}};
+  data_t data = {.opt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, .num_pattern = 0};
   data.invalid = VALID;
   int opt = 0;
 
-  while ((opt = getopt_long(argc, argv, "e:ivclnhsf:o", 0, NULL)) != -1) {
+  while ((opt = getopt(argc, argv, "e:ivclnhsf:o")) != -1) {
     switch_parser(opt, &data);
+    if (optarg) {
+      alloc_parser(&data, optarg);
+    } else {
+      printf("optarg - clear");
+    }
   }
 
   alloc_filepaths(&data, argc, argv);
@@ -23,11 +19,27 @@ data_t parser(int argc, char **argv) {
   return data;
 }
 
+void alloc_parser(data_t *data, char *optarg) {
+  data->patterns =
+      realloc(data->patterns, sizeof(char *) * (data->num_pattern + 1));
+  if (!data->patterns) {
+    data->invalid = FILEPATH_ALLOC;  // rename later
+  }
+
+  if (!data->invalid) {
+    data->patterns[data->num_pattern] = strdup(optarg);
+    if (!data->patterns[data->num_pattern]) {
+      data->invalid = FILEPATH_ALLOC;
+    }
+  }
+
+  data->num_pattern++;
+}
+
 void switch_parser(int opt, data_t *data) {
   switch (opt) {
     case 'e':
       data->opt.e = 1;
-      data->pattern = optarg;
       break;
     case 'i':
       data->opt.i = 1;
@@ -52,7 +64,6 @@ void switch_parser(int opt, data_t *data) {
       break;
     case 'f':
       data->opt.f = 1;
-      data->pattern = optarg;
       break;
     case 'o':
       data->opt.o = 1;
@@ -65,7 +76,7 @@ void switch_parser(int opt, data_t *data) {
 
 void alloc_filepaths(data_t *data, int argc, char **argv) {
   if (!data->opt.e && !data->opt.f) {
-    data->pattern = *(argv + 1);
+    alloc_parser(data, *(argv + 1));
     optind++;
   }
 

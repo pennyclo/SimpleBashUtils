@@ -15,50 +15,42 @@ void grep(data_t *data, int file_count) {
 
 void reader(FILE *file, data_t *data) {
   char *line = NULL;
-  size_t memline = 0;
+  size_t len = 0;
   int count_line = 0;
 
-  count_line = getline(&line, &memline, file);
-
-  while (count_line != -1) {
-    if (data->opt.e) {
-      e_flag(data, line);
-    }
-    count_line = getline(&line, &memline, file);
+  while ((count_line = getline(&line, &len, file)) != -1) {
+    outline(data, line);
   }
 
   free(line);
 }
 
-int matchs(data_t *data, char *line) {
+int matchs(data_t *data, char *line, int reti) {
   int match = 0;
-  regex_t regex;
-  int reti = regcomp(&regex, data->pattern, 0);
 
-  if (reti) {
-    fprintf(stderr, "Could not compile regex\n");  // temporary check
-    exit(1);
-  }
-
-  reti = regexec(&regex, line, 0, NULL, 0);
+  reti = regexec(&data->regex, line, 0, NULL, 0);
   if (!reti) {
     match = 1;
   }
 
-  regfree(&regex);
-
   return match;
 }
 
-// void outline(char *line, size_t count_char) {
-//   for (int i = 0; i < (int)count_char; i++) {
-//     printf("%c", *(line + i));
-//   }
-// }
+void outline(data_t *data, char *line) {
+  int match = 0;
 
-void e_flag(data_t *data, char *line) {
-  int match = matchs(data, line);
-  if (match) {
-    printf("%s", line);
+  for (int i = 0; i < data->num_pattern && !match; i++) {
+    int reti = regcomp(&data->regex, data->patterns[i], 0);
+    if (reti) {
+      fprintf(stderr, "Could not compile regex\n");  // temporary check
+      exit(1);
+    }
+
+    match = matchs(data, line, reti);
+
+    if (match) {
+      printf("%s", line);
+    }
+    regfree(&data->regex);
   }
 }

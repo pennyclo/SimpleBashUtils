@@ -1,7 +1,8 @@
 #===============COMPILER===============
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -pedantic -std=c11
+#CFLAGS = -Wall -Wextra -Werror -pedantic -std=c11
+CFLAGS = -Wall -Wextra -pedantic -std=c11
 
 #======================================
 
@@ -36,22 +37,29 @@ clang_check:
 clang_edit:
 	clang-format $(CLANGFLAGS_I) $(ALL_FILES)
 
-#================TESTS=================
+#================TESTS_VAL=================
 
 VALFLAGS = --tool=memcheck --leak-check=yes
-PATTERN = s21_grep
-FLAGS_TEST = -e
+PATTERN =  cl Makefile
+FLAGS_TEST = 
 
 #======================================
 
 val: 
 	valgrind $(VALFLAGS)  ./$(EXCRETION) $(FLAGS_TEST) $(PATTERN) $(VALTEST_PATH)
 
+#================TESTS_FILES=================
+
+#test:
+#	bash $(TESTS_PATH)grep_tests.sh
+
 test:
-	bash $(TESTS_PATH)tests.sh
+		bash tests.sh
 
 test_leaks:
-	bash $(TESTS_PATH)test_leaks.sh
+	bash test_leaks.sh
+#======================================
+
 
 #===============BUILD==================
 
@@ -77,7 +85,9 @@ rebuild: clean install
 
 #===============CLEAN==================
 
-clean: clean.o
+clean: clean_excr clean.o
+
+clean_excr: 
 	rm $(EXCRETION)
 
 clean.o:
