@@ -32,10 +32,17 @@ typedef enum {
 } errors_t;
 
 typedef struct {
+  int valid_flags;
+  int match;
+  int count_matchs;
+  int count_line;
+} value_flag_t;
+
+typedef struct {
   options_t opt;
   errors_t invalid;
   regex_t regex;
-  int valid_flags;
+  value_flag_t value_flags;
   int num_files;
   int num_pattern;
   int num_lines;
