@@ -7,16 +7,37 @@ data_t parser(int argc, char **argv) {
 
   while ((opt = getopt(argc, argv, "e:ivclnhsf:o")) != -1) {
     switch_parser(opt, &data);
-    if (optarg) {
+    if (data.opt.e) {
       alloc_parser(&data, optarg);
-    } else {
-      printf("optarg - clear");
+    } else if (data.opt.f) {
+      parser_f_flags(&data, optarg);
     }
   }
 
   alloc_filepaths(&data, argc, argv);
 
   return data;
+}
+
+void parser_f_flags(data_t *data, char *patterns) {
+  char *line_ptrn = NULL;
+  size_t len_ptrn = 0;
+  int count_line_ptrn = 0;
+
+  FILE *file_patterns = fopen(patterns, "r");
+
+  if (file_patterns) {
+    while ((count_line_ptrn = getline(&line_ptrn, &len_ptrn, file_patterns)) !=
+           -1) {
+      move_line(line_ptrn);
+      alloc_parser(data, line_ptrn);
+    }
+  }
+
+  if (file_patterns) {
+    fclose(file_patterns);
+    free(line_ptrn);
+  }
 }
 
 void alloc_parser(data_t *data, char *optarg) {
@@ -106,4 +127,11 @@ char *strdup(const char *str) {
   }
 
   return new_str;
+}
+
+void move_line(char *line) {
+  size_t len = strlen(line);
+  if (len > 0 && line[len - 1] == '\n') {
+    line[len - 1] = '\0';
+  }
 }

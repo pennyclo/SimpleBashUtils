@@ -1,6 +1,7 @@
 #ifndef PARCER_ARGS_H
 #define PARCER_ARGS_H
 
+#define _GNU_SOURCE
 #include <getopt.h>
 #include <regex.h>
 #include <stdio.h>
@@ -42,6 +43,8 @@ typedef struct {
 } data_t;
 
 data_t parser(int argc, char** argv);
+void parser_f_flags(data_t* data, char* patterns);
+void move_line(char* line);
 void switch_parser(int opt, data_t* data);
 void alloc_filepaths(data_t* data, int argc, char** argv);
 void alloc_parser(data_t* data, char* optarg);

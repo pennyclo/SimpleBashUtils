@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
     grep(&data, i);
   }
 
-  if (data.file_paths) {
+  if (data.file_paths) {  // later in function destroy
     for (int i = 0; i < data.num_files; i++) {
       if (data.file_paths[i]) {
         free(data.file_paths[i]);
@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     free(data.file_paths);
   }
 
-  if (data.patterns) {
+  if (data.patterns) {  // later in function destroy
     for (int i = 0; i < data.num_pattern; i++) {
       if (data.patterns[i]) {
         free(data.patterns[i]);

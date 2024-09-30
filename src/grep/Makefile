@@ -16,7 +16,7 @@ EXCRETION = s21_grep
 #===============PATHS==================
 
 TESTS_PATH = tests/
-VALTEST_PATH = Makefile
+VALTEST_PATH = 
 
 #======================================
 
@@ -40,7 +40,7 @@ clang_edit:
 #================TESTS_VAL=================
 
 VALFLAGS = --tool=memcheck --leak-check=yes
-PATTERN =  cl Makefile
+PATTERN =  -f 2.txt 1.txt
 FLAGS_TEST = 
 
 #======================================
@@ -88,9 +88,16 @@ rebuild: clean install
 clean: clean_excr clean.o
 
 clean_excr: 
-	rm $(EXCRETION)
+	rm -f $(EXCRETION)
 
 clean.o:
-	rm *.o
+	rm -f *.o
+
+#======================================
+
+
+#===============PHONY==================
+
+.PHONY: s21_grep clean clean_excr clean.o
 
 #======================================
