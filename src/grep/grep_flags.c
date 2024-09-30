@@ -54,9 +54,12 @@ void outline(data_t *data, char *line) {
 
     match = matchs(data, line, reti);
 
-    if (match) {
+    if (match && !data->opt.v) {
+      printf("%s", line);
+    } else if (!match && data->opt.v) {
       printf("%s", line);
     }
+
     regfree(&data->regex);
   }
 }
