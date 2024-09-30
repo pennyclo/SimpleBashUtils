@@ -10,6 +10,16 @@ void grep(data_t *data, int file_count) {
       printf("%s", data->file_paths[file_count]);
     }
 
+    if (data->opt.c) {
+      if (data->num_files > 1) {
+        printf("%s:%d", data->file_paths[file_count],
+               data->value_flags.count_line);
+        printf("\n");
+      } else {
+        printf("%d", data->value_flags.count_line);
+      }
+    }
+
     fclose(file);
   } else {
     printf("ERROR: no file\n");  // put it in a separate function later
@@ -25,10 +35,6 @@ void reader(FILE *file, data_t *data) {
 
   while ((tmp_line = getline(&line, &len, file)) != -1) {
     outline(data, line);
-  }
-
-  if (data->opt.c) {
-    printf("%d", data->value_flags.count_line);
   }
 
   free(line);
