@@ -39,7 +39,14 @@ void outline(data_t *data, char *line) {
   int match = 0;
 
   for (int i = 0; i < data->num_pattern && !match; i++) {
-    int reti = regcomp(&data->regex, data->patterns[i], 0);
+    int reti = 0;
+
+    if (data->opt.i) {
+      reti = regcomp(&data->regex, data->patterns[i], REG_ICASE);
+    } else {
+      reti = regcomp(&data->regex, data->patterns[i], 0);
+    }
+
     if (reti) {
       fprintf(stderr, "Could not compile regex\n");  // temporary check
       exit(1);

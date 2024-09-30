@@ -35,11 +35,12 @@ typedef struct {
   options_t opt;
   errors_t invalid;
   regex_t regex;
+  int valid_flags;
   int num_files;
   int num_pattern;
+  int num_lines;
   char** patterns;
   char** file_paths;
-  int num_lines;
 } data_t;
 
 data_t parser(int argc, char** argv);

@@ -58,36 +58,48 @@ void alloc_parser(data_t *data, char *optarg) {
 }
 
 void switch_parser(int opt, data_t *data) {
+  data->valid_flags = 0;
+
   switch (opt) {
     case 'e':
       data->opt.e = 1;
+      data->valid_flags = 1;
       break;
     case 'i':
       data->opt.i = 1;
+      data->valid_flags = 1;
       break;
     case 'v':
       data->opt.v = 1;
+      data->valid_flags = 1;
       break;
     case 'c':
       data->opt.c = 1;
+      data->valid_flags = 1;
       break;
     case 'l':
       data->opt.l = 1;
+      data->valid_flags = 1;
       break;
     case 'n':
       data->opt.n = 1;
+      data->valid_flags = 1;
       break;
     case 'h':
       data->opt.h = 1;
+      data->valid_flags = 1;
       break;
     case 's':
       data->opt.s = 1;
+      data->valid_flags = 1;
       break;
     case 'f':
       data->opt.f = 1;
+      data->valid_flags = 1;
       break;
     case 'o':
       data->opt.o = 1;
+      data->valid_flags = 1;
       break;
     default:
       data->invalid = UNKNOWN_OPT;
@@ -96,8 +108,11 @@ void switch_parser(int opt, data_t *data) {
 }
 
 void alloc_filepaths(data_t *data, int argc, char **argv) {
-  if (!data->opt.e && !data->opt.f) {
+  if (!data->valid_flags) {
     alloc_parser(data, *(argv + 1));
+    optind++;
+  } else if (!data->opt.e && !data->opt.f) {
+    alloc_parser(data, argv[optind]);
     optind++;
   }
 

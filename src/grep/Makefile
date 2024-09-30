@@ -16,7 +16,7 @@ EXCRETION = s21_grep
 #===============PATHS==================
 
 TESTS_PATH = tests/
-VALTEST_PATH = 
+VALTEST_PATH = 1.txt
 
 #======================================
 
@@ -40,8 +40,8 @@ clang_edit:
 #================TESTS_VAL=================
 
 VALFLAGS = --tool=memcheck --leak-check=yes
-PATTERN =  -f 2.txt 1.txt
-FLAGS_TEST = 
+PATTERN = test
+FLAGS_TEST = -i
 
 #======================================
 
