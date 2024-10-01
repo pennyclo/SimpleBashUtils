@@ -1,18 +1,17 @@
-
 #include "grep_flags.h"
 
-void grep(data_t *data, int file_count) {
-  FILE *file = fopen(data->file_paths[file_count], "r");
+void grep(data_t *data) {
+  FILE *file = fopen(data->file_paths[data->value_flags.count_files], "r");
   if (file) {
     reader(file, data);
 
     if (data->value_flags.count_matchs > 0 && data->opt.l) {
-      printf("%s", data->file_paths[file_count]);
+      printf("%s", data->file_paths[data->value_flags.count_files]);
     }
 
     if (data->opt.c) {
       if (data->num_files > 1) {
-        printf("%s:%d", data->file_paths[file_count],
+        printf("%s:%d", data->file_paths[data->value_flags.count_files],
                data->value_flags.count_line);
         printf("\n");
       } else {
@@ -72,8 +71,14 @@ void outline(data_t *data, char *line) {
 
     if (!data->opt.l) {
       if (data->value_flags.match && !data->opt.v && !data->opt.c) {
+        if (data->num_files > 1) {
+          printf("%s:", data->file_paths[data->value_flags.count_files]);
+        }
         printf("%s", line);
       } else if (!data->value_flags.match && data->opt.v) {
+        if (data->num_files > 1) {
+          printf("%s:", data->file_paths[data->value_flags.count_files]);
+        }
         printf("%s", line);
       } else if (data->value_flags.match && data->opt.c) {
         data->value_flags.count_line++;

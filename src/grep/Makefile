@@ -16,7 +16,7 @@ EXCRETION = s21_grep
 #===============PATHS==================
 
 TESTS_PATH = tests/
-VALTEST_PATH = 1.txt
+VALTEST_PATH = -e while -e void Makefile -f test_files/test_ptrn_grep.txt
 
 #======================================
 
@@ -40,8 +40,8 @@ clang_edit:
 #================TESTS_VAL=================
 
 VALFLAGS = --tool=memcheck --leak-check=yes
-PATTERN = test
-FLAGS_TEST = -i
+PATTERN = 
+FLAGS_TEST = 
 
 #======================================
 

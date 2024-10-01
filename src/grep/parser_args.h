@@ -36,6 +36,7 @@ typedef struct {
   int match;
   int count_matchs;
   int count_line;
+  int count_files;
 } value_flag_t;
 
 typedef struct {

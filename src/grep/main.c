@@ -7,8 +7,10 @@ int main(int argc, char **argv) {
   data_t data = parser(argc, argv);
 
   // out_pattern(&data);
-  for (int i = 0; i < data.num_files; i++) {
-    grep(&data, i);
+  for (data.value_flags.count_files = 0;
+       data.value_flags.count_files < data.num_files;
+       data.value_flags.count_files++) {
+    grep(&data);
   }
 
   if (data.file_paths) {  // later in function destroy

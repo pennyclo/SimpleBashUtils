@@ -7,10 +7,13 @@ data_t parser(int argc, char **argv) {
 
   while ((opt = getopt(argc, argv, "e:ivclnhsf:o")) != -1) {
     switch_parser(opt, &data);
+
+    if (data.opt.f) {
+      parser_f_flags(&data, optarg);
+    }
     if (data.opt.e) {
       alloc_parser(&data, optarg);
-    } else if (data.opt.f) {
-      parser_f_flags(&data, optarg);
+      data.opt.e = 0;
     }
   }
 
@@ -47,7 +50,7 @@ void alloc_parser(data_t *data, char *optarg) {
     data->invalid = FILEPATH_ALLOC;  // rename later
   }
 
-  if (!data->invalid) {
+  if (!data->invalid && optarg) {
     data->patterns[data->num_pattern] = strdup(optarg);
     if (!data->patterns[data->num_pattern]) {
       data->invalid = FILEPATH_ALLOC;
