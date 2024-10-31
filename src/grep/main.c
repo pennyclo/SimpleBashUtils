@@ -36,15 +36,16 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-void out_pattern(data_t *data) {
-  printf("out patterns: \n");
-  for (int i = 0; i < data->num_pattern; i++) {
-    printf("%s\n", data->patterns[i]);
-  }
+// void out_pattern(data_t *data) {
+// //   printf("out patterns: \n");
+// //   for (int i = 0; i < data->num_pattern; i++) {
+// //     printf("%s\n", data->patterns[i]);
+// //   }
 
-  printf("file paths: \n");
+// //   printf("file paths: \n");
 
-  for (int i = 0; i < data->num_files; i++) {
-    printf("%s\n", data->file_paths[i]);
-  }
-}
+// //   for (int i = 0; i < data->num_files; i++) {
+// //     printf("%s\n", data->file_paths[i]);
+// //   }
+
+// // }   

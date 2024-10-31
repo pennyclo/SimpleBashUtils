@@ -5,8 +5,8 @@
             "name": "Debug C/C++",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/src/cat/s21_cat",
-            "args": ["-n", "src/cat/tests/tests_files/test_1_cat.txt", "src/cat/tests/tests_files/char.txt", "src/cat/tests/tests_files/test_2_cat.txt"],
+            "program": "${workspaceFolder}/s21_grep",
+            "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -19,7 +19,6 @@
                     "ignoreFailures": true
                 }
             ],
-            
         }
     ]
-  }
+}

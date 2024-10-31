@@ -13,7 +13,7 @@ data_t parser(int argc, char **argv) {
     }
     if (data.opt.e) {
       alloc_parser(&data, optarg);
-      data.opt.e = 0;
+      // data.opt.e = 0;
     }
   }
 
