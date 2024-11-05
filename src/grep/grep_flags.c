@@ -7,14 +7,15 @@ void grep(data_t *data) {
 
     if (data->value_flags.count_matchs > 0 && data->opt.l) {
       printf("%s", data->file_paths[data->value_flags.count_files]);
+      printf("\n");
     }
 
     if (data->opt.c) {
-      if (data->num_files > 1) {
+      if (data->value_flags.count_matchs > 0 && data->num_files > 1) {
         printf("%s:%d", data->file_paths[data->value_flags.count_files],
                data->value_flags.count_line);
         printf("\n");
-      } else {
+      } else if (data->value_flags.count_matchs > 0) {
         printf("%d", data->value_flags.count_line);
       }
     }
@@ -26,15 +27,19 @@ void grep(data_t *data) {
 }
 
 void reader(FILE *file, data_t *data) {
+  int tmp = 0;
   char *line = NULL;
   size_t len = 0;
   data->num_lines = 1;
   data->value_flags.count_line = 0;
-  data->value_flags.count_matchs = 0;
   int tmp_line = 0;
 
   while ((tmp_line = getline(&line, &len, file)) != -1) {
-    outline(data, line);
+    tmp = outline(data, line);
+  }
+  if (data->value_flags.count_files == data->num_files - 1 &&
+      line[len - 1] == '\0' && tmp) {
+    printf("\n");
   }
 
   free(line);
@@ -51,7 +56,8 @@ int matchs(data_t *data, char *line, int reti) {
   return match;
 }
 
-void outline(data_t *data, char *line) {
+int outline(data_t *data, char *line) {
+  int tmp = 0;
   data->value_flags.match = 0;
 
   for (int i = 0; i < data->num_pattern && !data->value_flags.match; i++) {
@@ -89,12 +95,8 @@ void outline(data_t *data, char *line) {
         printf("%d:", data->num_lines);
       }
 
-      int size_len = strlen(line);
-      for (int i = 0; i < size_len + 1; i++) {
-        if (line[i] != '\0') {
-          printf("%c", line[i]);
-        }
-      }
+      printf("%s", line);
+      tmp = 1;
 
     } else if (data->value_flags.match && !data->opt.v) {
       if (data->num_files > 1 && !data->opt.h) {
@@ -104,9 +106,13 @@ void outline(data_t *data, char *line) {
       if (data->opt.n) {
         printf("%d:", data->num_lines);
       }
+
       printf("%s", line);
+      tmp = 1;
     }
   }
 
   data->num_lines++;
+
+  return tmp;
 }

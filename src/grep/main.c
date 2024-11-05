@@ -5,6 +5,7 @@
 
 int main(int argc, char **argv) {
   data_t data = parser(argc, argv);
+  data.value_flags.count_matchs = 0;
 
   // out_pattern(&data);
   for (data.value_flags.count_files = 0;
@@ -48,4 +49,4 @@ int main(int argc, char **argv) {
 // //     printf("%s\n", data->file_paths[i]);
 // //   }
 
-// // }   
+// // }
