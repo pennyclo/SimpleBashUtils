@@ -6,17 +6,15 @@ void grep(data_t *data) {
     reader(file, data);
 
     if (data->value_flags.count_matchs > 0 && data->opt.l) {
-      printf("%s", data->file_paths[data->value_flags.count_files]);
-      printf("\n");
+      printf("%s\n", data->file_paths[data->value_flags.count_files]);
     }
 
     if (data->opt.c) {
       if (data->value_flags.count_matchs > 0 && data->num_files > 1) {
-        printf("%s:%d", data->file_paths[data->value_flags.count_files],
+        printf("%s:%d\n", data->file_paths[data->value_flags.count_files],
                data->value_flags.count_line);
-        printf("\n");
       } else if (data->value_flags.count_matchs > 0) {
-        printf("%d", data->value_flags.count_line);
+        printf("%d\n", data->value_flags.count_line);
       }
     }
 
@@ -27,7 +25,6 @@ void grep(data_t *data) {
 }
 
 void reader(FILE *file, data_t *data) {
-  int tmp = 0;
   char *line = NULL;
   size_t len = 0;
   data->num_lines = 1;
@@ -35,11 +32,7 @@ void reader(FILE *file, data_t *data) {
   int tmp_line = 0;
 
   while ((tmp_line = getline(&line, &len, file)) != -1) {
-    tmp = outline(data, line);
-  }
-  if (data->value_flags.count_files == data->num_files - 1 &&
-      line[len - 1] == '\0' && tmp) {
-    printf("\n");
+    outline(data, line);
   }
 
   free(line);
@@ -56,8 +49,7 @@ int matchs(data_t *data, char *line, int reti) {
   return match;
 }
 
-int outline(data_t *data, char *line) {
-  int tmp = 0;
+void outline(data_t *data, char *line) {
   data->value_flags.match = 0;
 
   for (int i = 0; i < data->num_pattern && !data->value_flags.match; i++) {
@@ -84,9 +76,11 @@ int outline(data_t *data, char *line) {
   }
 
   if (!data->opt.l) {
-    if (data->value_flags.match && data->opt.c) {
+    if (data->value_flags.match && data->opt.c &&
+        data->value_flags.valid_flags) {
       data->value_flags.count_line++;
-    } else if (!data->value_flags.match && data->opt.v) {
+    } else if (!data->value_flags.match && data->opt.v &&
+               data->value_flags.valid_flags) {
       if (data->num_files > 1 && !data->opt.h) {
         printf("%s:", data->file_paths[data->value_flags.count_files]);
       }
@@ -95,10 +89,14 @@ int outline(data_t *data, char *line) {
         printf("%d:", data->num_lines);
       }
 
-      printf("%s", line);
-      tmp = 1;
+      if (line[strlen(line) - 1] == '\n') {
+        printf("%s", line);
+      } else {
+        printf("%s\n", line);
+      }
 
-    } else if (data->value_flags.match && !data->opt.v) {
+    } else if (data->value_flags.match && !data->opt.v &&
+               data->value_flags.valid_flags) {
       if (data->num_files > 1 && !data->opt.h) {
         printf("%s:", data->file_paths[data->value_flags.count_files]);
       }
@@ -107,12 +105,13 @@ int outline(data_t *data, char *line) {
         printf("%d:", data->num_lines);
       }
 
-      printf("%s", line);
-      tmp = 1;
+      if (line[strlen(line) - 1] == '\n') {
+        printf("%s", line);
+      } else {
+        printf("%s\n", line);
+      }
     }
   }
 
   data->num_lines++;
-
-  return tmp;
 }
