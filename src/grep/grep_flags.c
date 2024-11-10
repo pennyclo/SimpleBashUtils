@@ -75,7 +75,7 @@ void outline(data_t *data, char *line) {
     regfree(&data->regex);
   }
 
-  if (!data->opt.l) {
+  if (!data->opt.l && !data->opt.o) {
     if (data->value_flags.match && data->opt.c &&
         data->value_flags.valid_flags) {
       data->value_flags.count_line++;
@@ -109,6 +109,19 @@ void outline(data_t *data, char *line) {
         printf("%s", line);
       } else {
         printf("%s\n", line);
+      }
+    }
+  } else if (data->opt.o) {
+    for (int i = 0; line[i] != '\0'; i++) {
+      for (int tmp = 0; tmp < data->num_pattern; tmp++) {
+        char *result = strstr(line + i, data->patterns[tmp]);
+        if (result != NULL && result == line + i) {
+          if (data->opt.n) {
+            printf("%d:", data->num_lines);
+          }
+
+          printf("%s\n", data->patterns[tmp]);
+        }
       }
     }
   }
