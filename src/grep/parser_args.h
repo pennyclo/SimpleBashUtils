@@ -28,7 +28,7 @@ typedef enum {
   VALID,
   UNKNOWN_OPT,
   FILEPATH_ALLOC,
-
+  NO_FILE,
 } errors_t;
 
 typedef struct {

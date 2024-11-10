@@ -54,7 +54,7 @@ val:
 #	bash $(TESTS_PATH)grep_tests.sh
 
 test:
-		bash tests.sh
+	bash tests.sh
 
 test_leaks:
 	bash test_leaks.sh
@@ -63,9 +63,9 @@ test_leaks:
 
 #===============BUILD==================
 
-all: rebuild clean.o
+all: rebuild
 
-s21_grep: install
+s21_grep: install clean.o
 
 install: main parser flags
 	$(CC) $(CFLAGS) main.o parser_args.o grep_flags.o -o s21_grep

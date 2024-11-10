@@ -20,7 +20,9 @@ void grep(data_t *data) {
 
     fclose(file);
   } else {
-    printf("ERROR: no file\n");  // put it in a separate function later
+    fprintf(stderr, "grep: %s: No such file or directory\n",
+            data->file_paths[data->value_flags.count_files]);
+    // data->invalid = NO_FILE;  // put it in a separate function later
   }
 }
 
