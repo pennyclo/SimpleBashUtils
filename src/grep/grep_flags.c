@@ -7,9 +7,7 @@ void grep(data_t *data) {
 
     if (data->value_flags.count_matchs > 0 && data->opt.l) {
       printf("%s\n", data->file_paths[data->value_flags.count_files]);
-    }
-
-    if (data->opt.c) {
+    } else if (data->opt.c) {
       if (data->value_flags.count_matchs > 0 && data->num_files > 1) {
         printf("%s:%d\n", data->file_paths[data->value_flags.count_files],
                data->value_flags.count_line);
@@ -118,6 +116,9 @@ void outline(data_t *data, char *line) {
       for (int tmp = 0; tmp < data->num_pattern; tmp++) {
         char *result = strstr(line + i, data->patterns[tmp]);
         if (result != NULL && result == line + i) {
+          if (data->num_files > 1 && !data->opt.h) {
+            printf("%s:", data->file_paths[data->value_flags.count_files]);
+          }
           if (data->opt.n) {
             printf("%d:", data->num_lines);
           }

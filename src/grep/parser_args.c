@@ -8,10 +8,10 @@ data_t parser(int argc, char **argv) {
   while ((opt = getopt(argc, argv, "e:ivclnhsf:o")) != -1) {
     switch_parser(opt, &data);
 
-    if (data.opt.f) {
+    if (data.opt.f && optarg) {
       parser_f_flags(&data, optarg);
     }
-    if (data.opt.e) {
+    if (data.opt.e && optarg) {
       alloc_parser(&data, optarg);
       // data.opt.e = 0;
     }

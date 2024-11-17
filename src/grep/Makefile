@@ -16,7 +16,7 @@ EXCRETION = s21_grep
 #===============PATHS==================
 
 TESTS_PATH = tests/
-VALTEST_PATH = -e while -e void Makefile -f test_files/test_ptrn_grep.txt
+VALTEST_PATH = -noe "\)" test_files/test_5_grep.txt
 
 #======================================
 
@@ -45,7 +45,7 @@ FLAGS_TEST =
 
 #======================================
 
-val: 
+val: s21_grep
 	valgrind $(VALFLAGS)  ./$(EXCRETION) $(FLAGS_TEST) $(PATTERN) $(VALTEST_PATH)
 
 #================TESTS_FILES=================
@@ -91,7 +91,7 @@ clean_excr:
 	rm -f $(EXCRETION)
 
 clean.o:
-	rm -f *.o
+	rm -f *.o *.log *.txt
 
 #======================================
 
