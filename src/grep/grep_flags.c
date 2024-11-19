@@ -42,28 +42,26 @@ void outline(data_t *data, const char *line, int matchs_count) {
   if (!data->opt.l && !data->opt.o) {  // ДЕКОМПОЗИЦИЯ!!!
     if (matchs_count) {
       if (!data->opt.v) {
-        if (data->value_flags.valid_flags) {
-          if (data->opt.c) {
-            data->value_flags.count_line++;
+        if (data->opt.c) {
+          data->value_flags.count_line++;
+        } else {
+          if (data->num_files > 1 && !data->opt.h) {
+            printf("%s:", data->file_paths[data->value_flags.count_files]);
+          }
+
+          if (data->opt.n) {
+            printf("%d:", data->num_lines);
+          }
+
+          if (line[strlen(line) - 1] == '\n') {
+            printf("%s", line);
           } else {
-            if (data->num_files > 1 && !data->opt.h) {
-              printf("%s:", data->file_paths[data->value_flags.count_files]);
-            }
-
-            if (data->opt.n) {
-              printf("%d:", data->num_lines);
-            }
-
-            if (line[strlen(line) - 1] == '\n') {
-              printf("%s", line);
-            } else {
-              printf("%s\n", line);
-            }
+            printf("%s\n", line);
           }
         }
       }
     } else {
-      if (data->opt.v && data->value_flags.valid_flags) {
+      if (data->opt.v) {
         if (data->opt.c) {
           data->value_flags.count_line++;
         } else {
