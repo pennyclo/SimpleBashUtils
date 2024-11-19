@@ -29,11 +29,11 @@ typedef enum {
   UNKNOWN_OPT,
   FILEPATH_ALLOC,
   NO_FILE,
+  COMPILE_REG,
 } errors_t;
 
 typedef struct {
   int valid_flags;
-  int match;
   int count_matchs;
   int count_line;
   int count_files;

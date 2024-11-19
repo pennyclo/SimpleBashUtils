@@ -32,89 +32,55 @@ void reader(FILE *file, data_t *data) {
   int tmp_line = 0;
 
   while ((tmp_line = getline(&line, &len, file)) != -1) {
-    outline(data, line);
+    outline(data, line, value_match(data, line));
   }
 
   free(line);
 }
 
-int matchs(data_t *data, char *line, int reti) {  // проверить надобность reti
-  int match = 0;
-
-  reti = regexec(&data->regex, line, 0, NULL, 0);
-  if (!reti) {
-    match = 1;
-  } else if (reti != REG_NOMATCH) {
-    fprintf(stderr, "Regex match failed\n");
-  }
-
-  return match;
-}
-
-void outline(data_t *data, char *line) {
-  data->value_flags.match = 0;
-
-  for (int i = 0; i < data->num_pattern && !data->value_flags.match; i++) {
-    int reti = 0;
-
-    if (data->opt.i) {
-      reti = regcomp(&data->regex, data->patterns[i], REG_ICASE);
-    } else {
-      reti = regcomp(&data->regex, data->patterns[i], REG_EXTENDED);
-    }
-
-    if (reti) {
-      fprintf(stderr, "Could not compile regex\n");  // temporary check
-      exit(1);
-    }
-
-    data->value_flags.match += matchs(data, line, reti);
-
-    if (data->value_flags.match) {
-      data->value_flags.count_matchs++;
-    }
-
-    regfree(&data->regex);
-  }
-
+void outline(data_t *data, const char *line, int matchs_count) {
   if (!data->opt.l && !data->opt.o) {  // ДЕКОМПОЗИЦИЯ!!!
-    if (data->value_flags.match && data->opt.c &&
-        data->value_flags.valid_flags && !data->opt.v) {
-      data->value_flags.count_line++;
-    } else if (!data->value_flags.match && data->opt.v &&
-               data->value_flags.valid_flags) {
-      if (data->opt.c) {
-        data->value_flags.count_line++;
-      } else {
-        if (data->num_files > 1 && !data->opt.h) {
-          printf("%s:", data->file_paths[data->value_flags.count_files]);
-        }
+    if (matchs_count) {
+      if (!data->opt.v) {
+        if (data->value_flags.valid_flags) {
+          if (data->opt.c) {
+            data->value_flags.count_line++;
+          } else {
+            if (data->num_files > 1 && !data->opt.h) {
+              printf("%s:", data->file_paths[data->value_flags.count_files]);
+            }
 
-        if (data->opt.n) {
-          printf("%d:", data->num_lines);
-        }
+            if (data->opt.n) {
+              printf("%d:", data->num_lines);
+            }
 
-        if (line[strlen(line) - 1] == '\n') {
-          printf("%s", line);
+            if (line[strlen(line) - 1] == '\n') {
+              printf("%s", line);
+            } else {
+              printf("%s\n", line);
+            }
+          }
+        }
+      }
+    } else {
+      if (data->opt.v && data->value_flags.valid_flags) {
+        if (data->opt.c) {
+          data->value_flags.count_line++;
         } else {
-          printf("%s\n", line);
+          if (data->num_files > 1 && !data->opt.h) {
+            printf("%s:", data->file_paths[data->value_flags.count_files]);
+          }
+
+          if (data->opt.n) {
+            printf("%d:", data->num_lines);
+          }
+
+          if (line[strlen(line) - 1] == '\n') {
+            printf("%s", line);
+          } else {
+            printf("%s\n", line);
+          }
         }
-      }
-
-    } else if (data->value_flags.match && !data->opt.v &&
-               data->value_flags.valid_flags) {
-      if (data->num_files > 1 && !data->opt.h) {
-        printf("%s:", data->file_paths[data->value_flags.count_files]);
-      }
-
-      if (data->opt.n) {
-        printf("%d:", data->num_lines);
-      }
-
-      if (line[strlen(line) - 1] == '\n') {
-        printf("%s", line);
-      } else {
-        printf("%s\n", line);
       }
     }
   } else if (data->opt.o) {
@@ -136,4 +102,50 @@ void outline(data_t *data, char *line) {
   }
 
   data->num_lines++;
+}
+
+int value_match(data_t *data, const char *line) {
+  int matchs_count = 0;
+
+  for (int i = 0; i < data->num_pattern && !matchs_count && !data->invalid;
+       i++) {
+    int comp_reg = 0;
+
+    if (data->opt.i) {
+      comp_reg = regcomp(&data->regex, data->patterns[i], REG_ICASE);
+    } else {
+      comp_reg = regcomp(&data->regex, data->patterns[i], REG_EXTENDED);
+    }
+
+    if (comp_reg) {
+      fprintf(stderr, "Could not compile regex\n");  // temporary check
+      data->invalid = COMPILE_REG;
+    }
+
+    if (!data->invalid) {
+      matchs_count += matchs(data, line);
+
+      if (matchs_count) {
+        data->value_flags.count_matchs++;
+      }
+    }
+
+    regfree(&data->regex);
+  }
+
+  return matchs_count;
+}
+
+int matchs(data_t *data, const char *line) {
+  int match = 0;
+  int value_match = 0;
+
+  value_match = regexec(&data->regex, line, 0, NULL, 0);
+  if (!value_match) {
+    match = 1;
+  } else if (value_match != REG_NOMATCH) {
+    fprintf(stderr, "Regex match failed\n");
+  }
+
+  return match;
 }
