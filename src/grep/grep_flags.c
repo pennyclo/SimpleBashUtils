@@ -38,12 +38,14 @@ void reader(FILE *file, data_t *data) {
   free(line);
 }
 
-int matchs(data_t *data, char *line, int reti) {
+int matchs(data_t *data, char *line, int reti) {  // проверить надобность reti
   int match = 0;
 
   reti = regexec(&data->regex, line, 0, NULL, 0);
   if (!reti) {
     match = 1;
+  } else if (reti != REG_NOMATCH) {
+    fprintf(stderr, "Regex match failed\n");
   }
 
   return match;
@@ -75,24 +77,28 @@ void outline(data_t *data, char *line) {
     regfree(&data->regex);
   }
 
-  if (!data->opt.l && !data->opt.o) {
+  if (!data->opt.l && !data->opt.o) {  // ДЕКОМПОЗИЦИЯ!!!
     if (data->value_flags.match && data->opt.c &&
-        data->value_flags.valid_flags) {
+        data->value_flags.valid_flags && !data->opt.v) {
       data->value_flags.count_line++;
     } else if (!data->value_flags.match && data->opt.v &&
                data->value_flags.valid_flags) {
-      if (data->num_files > 1 && !data->opt.h) {
-        printf("%s:", data->file_paths[data->value_flags.count_files]);
-      }
-
-      if (data->opt.n) {
-        printf("%d:", data->num_lines);
-      }
-
-      if (line[strlen(line) - 1] == '\n') {
-        printf("%s", line);
+      if (data->opt.c) {
+        data->value_flags.count_line++;
       } else {
-        printf("%s\n", line);
+        if (data->num_files > 1 && !data->opt.h) {
+          printf("%s:", data->file_paths[data->value_flags.count_files]);
+        }
+
+        if (data->opt.n) {
+          printf("%d:", data->num_lines);
+        }
+
+        if (line[strlen(line) - 1] == '\n') {
+          printf("%s", line);
+        } else {
+          printf("%s\n", line);
+        }
       }
 
     } else if (data->value_flags.match && !data->opt.v &&
