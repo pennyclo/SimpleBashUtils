@@ -11,5 +11,8 @@ int matchs(data_t *data, const char *line);
 int e_flag(data_t *data, char *line, int reti);
 void flags_l_c(data_t *data);
 void value_out(data_t *data, const char *line);
+void value_h_flag(data_t *data);
+void value_n_flag(data_t *data);
+void output(const char *line);
 
 #endif

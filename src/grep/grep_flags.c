@@ -89,19 +89,31 @@ void value_out(data_t *data, const char *line) {
   if (data->opt.c) {
     data->value_flags.count_line++;
   } else {
-    if (data->num_files > 1 && !data->opt.h) {
-      printf("%s:", data->file_paths[data->value_flags.count_files]);
-    }
+    value_h_flag(data);
 
-    if (data->opt.n) {
-      printf("%d:", data->num_lines);
-    }
+    value_n_flag(data);
 
-    if (line[strlen(line) - 1] == '\n') {
-      printf("%s", line);
-    } else {
-      printf("%s\n", line);
-    }
+    output(line);
+  }
+}
+
+void value_h_flag(data_t *data) {
+  if (data->num_files > 1 && !data->opt.h) {
+    printf("%s:", data->file_paths[data->value_flags.count_files]);
+  }
+}
+
+void value_n_flag(data_t *data) {
+  if (data->opt.n) {
+    printf("%d:", data->num_lines);
+  }
+}
+
+void output(const char *line) {
+  if (line[strlen(line) - 1] == '\n') {
+    printf("%s", line);
+  } else {
+    printf("%s\n", line);
   }
 }
 
