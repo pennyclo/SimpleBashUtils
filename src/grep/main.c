@@ -7,12 +7,14 @@ void destroy(data_t *data);
 int main(int argc, char **argv) {
   data_t data = parser(argc, argv);
   data.value_flags.count_matchs = 0;
+  data.value_flags.valid_all_matchs = 0;
 
   // out_pattern(&data);
   for (data.value_flags.count_files = 0;
        data.value_flags.count_files < data.num_files;
        data.value_flags.count_files++) {
     grep(&data);
+    flags_l_c(&data);
   }
 
   // destroy(&data);

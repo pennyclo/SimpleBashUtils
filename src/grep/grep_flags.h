@@ -9,5 +9,6 @@ void outline(data_t *data, const char *line, int matchs_count);
 int value_match(data_t *data, const char *line);
 int matchs(data_t *data, const char *line);
 int e_flag(data_t *data, char *line, int reti);
+void flags_l_c(data_t *data);
 
 #endif

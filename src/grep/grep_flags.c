@@ -5,17 +5,6 @@ void grep(data_t *data) {
   if (file) {
     reader(file, data);
 
-    if (data->value_flags.count_matchs > 0 && data->opt.l) {
-      printf("%s\n", data->file_paths[data->value_flags.count_files]);
-    } else if (data->opt.c) {
-      if (data->value_flags.count_matchs > 0 && data->num_files > 1) {
-        printf("%s:%d\n", data->file_paths[data->value_flags.count_files],
-               data->value_flags.count_line);
-      } else if (data->value_flags.count_matchs > 0) {
-        printf("%d\n", data->value_flags.count_line);
-      }
-    }
-
     fclose(file);
   } else {
     fprintf(stderr, "grep: %s: No such file or directory\n",
@@ -29,6 +18,7 @@ void reader(FILE *file, data_t *data) {
   size_t len = 0;
   data->num_lines = 1;
   data->value_flags.count_line = 0;
+  data->value_flags.count_matchs = 0;
   int tmp_line = 0;
 
   while ((tmp_line = getline(&line, &len, file)) != -1) {
@@ -37,7 +27,33 @@ void reader(FILE *file, data_t *data) {
 
   free(line);
 }
-
+void flags_l_c(data_t *data) {
+  if (!data->opt.v) {
+    if (data->value_flags.valid_all_matchs) {
+      if (data->value_flags.count_matchs > 0 && data->opt.l) {
+        printf("%s\n", data->file_paths[data->value_flags.count_files]);
+      } else if (data->opt.c) {
+        if (data->num_files > 1) {
+          printf("%s:%d\n", data->file_paths[data->value_flags.count_files],
+                 data->value_flags.count_line);
+        } else if (data->value_flags.count_matchs > 0) {
+          printf("%d\n", data->value_flags.count_line);
+        }
+      }
+    }
+  } else {
+    if (data->opt.l) {
+      printf("%s\n", data->file_paths[data->value_flags.count_files]);
+    } else if (data->opt.c) {
+      if (data->num_files > 1) {
+        printf("%s:%d\n", data->file_paths[data->value_flags.count_files],
+               data->value_flags.count_line);
+      } else if (data->value_flags.count_matchs > 0) {
+        printf("%d\n", data->value_flags.count_line);
+      }
+    }
+  }
+}
 void outline(data_t *data, const char *line, int matchs_count) {
   if (!data->opt.l && !data->opt.o) {  // ДЕКОМПОЗИЦИЯ!!!
     if (matchs_count) {
@@ -125,6 +141,7 @@ int value_match(data_t *data, const char *line) {
 
       if (matchs_count) {
         data->value_flags.count_matchs++;
+        data->value_flags.valid_all_matchs = 1;
       }
     }
 

@@ -33,6 +33,7 @@ typedef enum {
 } errors_t;
 
 typedef struct {
+  int valid_all_matchs;
   int valid_flags;
   int count_matchs;
   int count_line;
