@@ -33,27 +33,27 @@ void flags_l_c(data_t *data) {
       if (data->value_flags.count_matchs > 0 && data->opt.l) {
         printf("%s\n", data->file_paths[data->value_flags.count_files]);
       } else if (data->opt.c) {
-        if (data->num_files > 1) {
-          printf("%s:%d\n", data->file_paths[data->value_flags.count_files],
-                 data->value_flags.count_line);
-        } else if (data->value_flags.count_matchs > 0) {
-          printf("%d\n", data->value_flags.count_line);
-        }
+        value_c_flag(data);
       }
     }
   } else {
     if (data->opt.l) {
       printf("%s\n", data->file_paths[data->value_flags.count_files]);
     } else if (data->opt.c) {
-      if (data->num_files > 1) {
-        printf("%s:%d\n", data->file_paths[data->value_flags.count_files],
-               data->value_flags.count_line);
-      } else if (data->value_flags.count_matchs > 0) {
-        printf("%d\n", data->value_flags.count_line);
-      }
+      value_c_flag(data);
     }
   }
 }
+
+void value_c_flag(data_t *data) {
+  if (data->num_files > 1) {
+    printf("%s:%d\n", data->file_paths[data->value_flags.count_files],
+           data->value_flags.count_line);
+  } else if (data->value_flags.count_matchs > 0) {
+    printf("%d\n", data->value_flags.count_line);
+  }
+}
+
 void outline(data_t *data, const char *line, int matchs_count) {
   if (!data->opt.o && !data->opt.l) {  // ДЕКОМПОЗИЦИЯ!!!
     if (!data->opt.v) {
@@ -70,12 +70,9 @@ void outline(data_t *data, const char *line, int matchs_count) {
       for (int tmp = 0; tmp < data->num_pattern; tmp++) {
         char *result = strstr(line + i, data->patterns[tmp]);
         if (result != NULL && result == line + i) {
-          if (data->num_files > 1 && !data->opt.h) {
-            printf("%s:", data->file_paths[data->value_flags.count_files]);
-          }
-          if (data->opt.n) {
-            printf("%d:", data->num_lines);
-          }
+          value_h_flag(data);
+
+          value_n_flag(data);
 
           printf("%s\n", data->patterns[tmp]);
         }
