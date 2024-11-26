@@ -7,8 +7,10 @@ void grep(data_t *data) {
 
     fclose(file);
   } else {
-    fprintf(stderr, "grep: %s: No such file or directory\n",
-            data->file_paths[data->value_flags.count_files]);
+    if (!data->opt.s) {
+      fprintf(stderr, "grep: %s: No such file or directory\n",
+              data->file_paths[data->value_flags.count_files]);
+    }
     // data->invalid = NO_FILE;  // put it in a separate function later
   }
 }
@@ -127,7 +129,7 @@ void compiling_reg(data_t *data, int count_pattern) {
     comp_reg = regcomp(&data->regex, data->patterns[count_pattern], REG_ICASE);
   } else {
     comp_reg =
-        regcomp(&data->regex, data->patterns[count_pattern], REG_EXTENDED);
+        regcomp(&data->regex, data->patterns[count_pattern], REG_NEWLINE);
   }
 
   if (comp_reg) {

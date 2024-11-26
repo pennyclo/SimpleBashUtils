@@ -1,8 +1,8 @@
 #===============COMPILER===============
 
 CC = gcc
-#CFLAGS = -Wall -Wextra -Werror -pedantic -std=c11
-CFLAGS = -Wall -Wextra -pedantic -std=c11 -g
+CFLAGS = -Wall -Wextra -Werror -pedantic -std=c11
+# CFLAGS = -Wall -Wextra -pedantic -std=c11 -g
 
 #======================================
 
