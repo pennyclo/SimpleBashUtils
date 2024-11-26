@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
        data.value_flags.count_files < data.num_files;
        data.value_flags.count_files++) {
     grep(&data);
-    flags_l_c(&data);
+    // flags_l_c(&data);
   }
 
   // destroy(&data);

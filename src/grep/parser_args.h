@@ -30,6 +30,7 @@ typedef enum {
   FILEPATH_ALLOC,
   NO_FILE,
   COMPILE_REG,
+  ALLOC_PATTERN,
 } errors_t;
 
 typedef struct {
