@@ -46,6 +46,3 @@ test:
 
 clang_check:
 	clang-format -style=Google -n $(ALL_FILES)
-
-clang_edit:
-	clang-format -style=Google -i $(ALL_FILES)

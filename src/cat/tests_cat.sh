@@ -4,13 +4,11 @@ SUCCESS=0
 FAIL=0
 TEST_NUMBER=0
 DIFF_RES=""
-# MAIN_OPTIONS="v"
 MAIN_OPTIONS="b e E n t T s v"
 RED=`tput setaf 1`
 GREEN=`tput setaf 2`
 BASE=`tput setaf 7`
 
-# расскомментировать по очереди по одной строке! иначе слишком много тестов и как следствие - долго и много времени.
 declare -a files=(    
      "VAR tests/tests_files/char.txt"
      "VAR tests/tests_files/test_case_cat.txt"
@@ -29,33 +27,26 @@ declare -a files=(
 )
 
 testing() {
-    t=$(echo $@ | sed "s/VAR/$var/") #echo "-n test_files/test_case_cat.txt test_files/test_1_cat.txt" | sed "s/VAR/$var/"
+    t=$(echo $@ | sed "s/VAR/$var/")
     ./s21_cat $t > tests/tests_log/${TEST_NUMBER}_test_s21_cat.log
     cat $t > tests/tests_log/${TEST_NUMBER}_test_sys_cat.log
     SHA1=`cat tests/tests_log/${TEST_NUMBER}_test_s21_cat.log | sha256sum`
     SHA2=`cat tests/tests_log/${TEST_NUMBER}_test_sys_cat.log | sha256sum`
-    # echo $SHA1
-    # echo $SHA2
-    #DIFF_RES=`diff test_s21_cat.log test_sys_cat.log -q`
 
-    # if [ -z "$DIFF_RES" ] && 
     if [[ $SHA1 == $SHA2 ]]
     then
-      (( SUCCESS++ )) #&& ((TEST_NUMBER++))
+      (( SUCCESS++ ))
         RESULT="SUCCESS"
         echo "[${GREEN}${SUCCESS}${BASE}/${RED}${FAIL}${BASE}] ${GREEN}${RESULT}${BASE} cat $t"
 
     else
-      (( FAIL++ )) #&& ((TEST_NUMBER++))
+      (( FAIL++ ))
         RESULT="FAIL"
         echo "[${GREEN}${SUCCESS}${BASE}/${RED}${FAIL}${BASE}] ${RED}${RESULT}${BASE} cat $t"
 
     fi
-    # echo "[${GREEN}${SUCCESS}${BASE}/${RED}${FAIL}${BASE}] ${GREEN}${RESULT}${BASE} cat $t"
-    # rm tests/tests_log/${TEST_NUMBER}_test_s21_cat.log tests/tests_log/${TEST_NUMBER}_test_sys_cat.log
 }
 
-# Тестирование по 1 опции из MAIN_OPTIONS 
 for var1 in $MAIN_OPTIONS
 do
     for i in "${files[@]}"
@@ -65,7 +56,6 @@ do
     done
 done
 
-# Тестирование по 2 опциям из MAIN_OPTIONS
 for var1 in $MAIN_OPTIONS
 do
     for var2 in $MAIN_OPTIONS
@@ -82,7 +72,6 @@ do
 done
 
 
-# # Тестирование по 3 опциям из MAIN_OPTIONS
 for var1 in $MAIN_OPTIONS
 do
     for var2 in $MAIN_OPTIONS
@@ -101,7 +90,6 @@ do
     done
 done
 
-# # Тестирование по 4 опциям из MAIN_OPTIONS
 for var1 in $MAIN_OPTIONS
 do
     for var2 in $MAIN_OPTIONS
@@ -124,7 +112,6 @@ do
     done
 done
 
-# # Тестирование по 5 опциям из MAIN_OPTIONS
 for var1 in $MAIN_OPTIONS
 do
     for var2 in $MAIN_OPTIONS
@@ -152,7 +139,6 @@ do
     done
 done
 
-# # Тестирование по 6 опциям из MAIN_OPTIONS
 for var1 in $MAIN_OPTIONS
 do
     for var2 in $MAIN_OPTIONS
