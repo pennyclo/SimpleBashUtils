@@ -152,3 +152,16 @@ void move_line(char *line) {
     line[len - 1] = '\0';
   }
 }
+
+char *alloc_patterns_o(data_t *data, size_t len_patterns) {
+  char *patterns_line = malloc(len_patterns + 1);
+
+  if (patterns_line == NULL) {
+    fprintf(stderr, "Memory allocation failed\n");
+    data->invalid = ALLOC_PATTERN;
+  }
+
+  patterns_line[0] = '\0';
+
+  return patterns_line;
+}

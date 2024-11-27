@@ -11,7 +11,6 @@ void grep(data_t *data) {
       fprintf(stderr, "grep: %s: No such file or directory\n",
               data->file_paths[data->value_flags.count_files]);
     }
-    // data->invalid = NO_FILE;  // put it in a separate function later
   }
 }
 
@@ -68,60 +67,6 @@ void outline(data_t *data, const char *line, int matchs_count) {
   data->num_lines++;
 }
 
-void value_o_flag(data_t *data, const char *line) {
-  size_t len_patterns = 0;
-  regmatch_t pmatch[1];
-
-  for (int i = 0; i < data->num_pattern; i++) {
-    len_patterns += strlen(data->patterns[i]);
-    if (i < data->num_pattern - 1) {
-      len_patterns += 1;
-    }
-  }
-
-  char *patterns_line = malloc(len_patterns + 1);
-  if (patterns_line == NULL) {
-    fprintf(stderr, "Memory allocation failed\n");
-    data->invalid = ALLOC_PATTERN;
-    return;
-  }
-
-  patterns_line[0] = '\0';
-
-  for (int i = 0; i < data->num_pattern; i++) {
-    strcat(patterns_line, data->patterns[i]);
-    if (i < data->num_pattern - 1) {
-      strcat(patterns_line, "|");
-    }
-  }
-
-  const char *line_reg = line;
-  int find_match = 0;
-  int start = 0;
-
-  compiling_reg_o(data, patterns_line);
-
-  while ((find_match = regexec(&data->regex, line_reg + start, 1, pmatch, 0)) ==
-         0) {
-    if (!data->opt.v) {
-      value_h_flag(data);
-
-      value_n_flag(data);
-
-      printf("%.*s\n", (int)(pmatch[0].rm_eo - pmatch[0].rm_so),
-             line_reg + start + pmatch[0].rm_so);
-    }
-    start += pmatch[0].rm_eo;
-  }
-
-  if (find_match != REG_NOMATCH) {
-    fprintf(stderr, "Regex match failed\n");
-  }
-
-  regfree(&data->regex);
-  free(patterns_line);
-}
-
 void compiling_reg(data_t *data, int count_pattern) {
   int comp_reg = 0;
 
@@ -133,7 +78,6 @@ void compiling_reg(data_t *data, int count_pattern) {
   }
 
   if (comp_reg) {
-    fprintf(stderr, "Could not compile regex\n");  // temporary check
     data->invalid = COMPILE_REG;
   }
 }
@@ -148,7 +92,6 @@ void compiling_reg_o(data_t *data, char *patterns) {
   }
 
   if (comp_reg) {
-    fprintf(stderr, "Could not compile regex\n");  // temporary check
     data->invalid = COMPILE_REG;
   }
 }
@@ -161,7 +104,7 @@ int matchs(data_t *data, const char *line) {
   if (!value_match) {
     match = 1;
   } else if (value_match != REG_NOMATCH) {
-    fprintf(stderr, "Regex match failed\n");
+    data->invalid = REG_ERROR;
   }
 
   return match;
@@ -173,7 +116,6 @@ void value_out(data_t *data, const char *line) {
   } else {
     if (data->opt.o) {
       value_o_flag(data, line);
-
     } else {
       value_h_flag(data);
 
@@ -233,4 +175,61 @@ void flags_l_c(data_t *data) {
       value_c_flag(data);
     }
   }
+}
+
+void value_o_flag(data_t *data, const char *line) {
+  regmatch_t pmatch[1];
+  size_t len_patterns = find_len_patterns(data);
+
+  char *patterns_line =
+      patterns_for_o(data, alloc_patterns_o(data, len_patterns));
+
+  int find_match = 0;
+  int start = 0;
+
+  compiling_reg_o(data, patterns_line);
+
+  while ((find_match = regexec(&data->regex, line + start, 1, pmatch, 0)) ==
+         0) {
+    if (!data->opt.v) {
+      value_h_flag(data);
+
+      value_n_flag(data);
+
+      printf("%.*s\n", (int)(pmatch[0].rm_eo - pmatch[0].rm_so),
+             line + start + pmatch[0].rm_so);
+    }
+    start += pmatch[0].rm_eo;
+  }
+
+  if (find_match != REG_NOMATCH) {
+    fprintf(stderr, "Regex match failed\n");
+  }
+
+  regfree(&data->regex);
+  free(patterns_line);
+}
+
+char *patterns_for_o(data_t *data, char *patterns_line) {
+  for (int i = 0; i < data->num_pattern; i++) {
+    strcat(patterns_line, data->patterns[i]);
+    if (i < data->num_pattern - 1) {
+      strcat(patterns_line, "|");
+    }
+  }
+
+  return patterns_line;
+}
+
+size_t find_len_patterns(data_t *data) {
+  size_t len_patterns = 0;
+
+  for (int i = 0; i < data->num_pattern; i++) {
+    len_patterns += strlen(data->patterns[i]);
+    if (i < data->num_pattern - 1) {
+      len_patterns += 1;
+    }
+  }
+
+  return len_patterns;
 }

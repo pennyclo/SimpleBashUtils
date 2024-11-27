@@ -18,5 +18,7 @@ void output(const char *line);
 void compiling_reg(data_t *data, int count_pattern);
 void compiling_reg_o(data_t *data, char *patterns);
 void value_o_flag(data_t *data, const char *line);
+size_t find_len_patterns(data_t *data);
+char *patterns_for_o(data_t *data, char *patterns_line);
 
 #endif
