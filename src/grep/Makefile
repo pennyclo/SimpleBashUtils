@@ -22,7 +22,7 @@ CLANGFLAGS_N = -style=Google -n
 #==============================================================================
 
 cpp:
-	cppcheck $(CPPFLAGS) *.c
+	cppcheck $(CPPFLAGS) *.c *.h
 
 clang_check:
 	clang-format $(CLANGFLAGS_N) $(ALL_FILES)

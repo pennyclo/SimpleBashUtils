@@ -8,7 +8,7 @@ void optional_b(data_t *data, int cnt_symbol) {
 
 void optional_n(data_t *data) { printf("%6d\t", data->num_line++); }
 
-void optional_E(data_t *data, int cnt_symbol) {
+void optional_E(const data_t *data, int cnt_symbol) {
   if (data->buffer[cnt_symbol] == '\n') {
     printf("$");
   }
@@ -21,7 +21,7 @@ void optional_T(data_t *data, int cnt_symbol) {
   }
 }
 
-void optional_s(data_t *data, int *cnt_symbol) {
+void optional_s(const data_t *data, int *cnt_symbol) {
   if (data->buffer[*cnt_symbol] == '\n') {
     int count_space = 0;
 

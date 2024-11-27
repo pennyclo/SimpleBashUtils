@@ -38,7 +38,7 @@ val: s21_cat
 	valgrind --tool=memcheck --leak-check=yes  ./$(EXCRETION) $(FLAGS_TEST) $(TEST_PATH)
 
 cpp:
-	cppcheck --enable=all --suppress=missingIncludeSystem *.c
+	cppcheck --enable=all --suppress=missingIncludeSystem *.c *.h
 
 
 test:
