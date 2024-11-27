@@ -23,11 +23,14 @@ parser_args:
 cat_flags:
 	$(CC) $(CFLAGS) -c cat_flags.c
 
-clean: clean.o
+clean: clean.o clean.log
 	rm -rf $(EXCRETION) analysis/*
 
 clean.o:
 	rm -rf *.o
+
+clean.log:
+	rm -rf tests/tests_log/*
 
 rebuild: clean install
 
