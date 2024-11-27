@@ -24,7 +24,6 @@ VALTEST_PATH = -noe "\)" test_files/test_5_grep.txt
 
 CPPFLAGS = —enable=all —suppress=missingIncludeSystem
 CLANGFLAGS_N = -style=Google -n
-CLANGFLAGS_I = -style=Google -i
 
 #======================================
 
@@ -33,9 +32,6 @@ cpp:
 
 clang_check:
 	clang-format $(CLANGFLAGS_N) $(ALL_FILES)
-
-clang_edit:
-	clang-format $(CLANGFLAGS_I) $(ALL_FILES)
 
 #================TESTS_VAL=================
 
@@ -65,7 +61,7 @@ test_leaks:
 
 all: rebuild
 
-s21_grep: install clean.o
+s21_grep: install
 
 install: main parser flags
 	$(CC) $(CFLAGS) main.o parser_args.o grep_flags.o -o s21_grep
