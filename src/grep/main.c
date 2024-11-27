@@ -5,12 +5,12 @@ static void destroy(data_t *data);
 
 int main(int argc, char **argv) {
   data_t data = parser(argc, argv);
-  data.value_flags.count_matchs = 0;
-  data.value_flags.valid_all_matchs = 0;
+  data.value_counts.count_matchs = 0;
+  data.valid_all_matchs = 0;
 
-  for (data.value_flags.count_files = 0;
-       data.value_flags.count_files < data.num_files;
-       data.value_flags.count_files++) {
+  for (data.value_counts.count_files = 0;
+       data.value_counts.count_files < data.num_files;
+       data.value_counts.count_files++) {
     grep(&data);
   }
 
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 static void destroy(data_t *data) {
   switch (data->invalid) {
     case 1:
-      printf("Error allocated memory for file paths");
+      fprintf(stderr, "Error allocated memory for file paths");
       break;
     case 2:
       fprintf(stderr, "Could not compile regex");

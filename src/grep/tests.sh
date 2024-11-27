@@ -1,4 +1,5 @@
 #!/bin/bash
+
 SUCCESS=0
 FAIL=0
 COUNTER=0
@@ -244,4 +245,3 @@ printf "\033[95m"
 echo "ALL: $COUNTER"
 printf "\x1b[0m"
 printf "\n"
-##############################

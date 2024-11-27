@@ -5,20 +5,18 @@
 
 void grep(data_t *data);
 void reader(FILE *file, data_t *data);
+int count_matchs(data_t *data, const char *line);
+int valid_match(data_t *data, const char *line);
 void outline(data_t *data, const char *line, int matchs_count);
-int value_match(data_t *data, const char *line);
-int matchs(data_t *data, const char *line);
-int e_flag(data_t *data, char *line, int reti);
-void flags_l_c(data_t *data);
-void value_out(data_t *data, const char *line);
-void value_h_flag(data_t *data);
-void value_n_flag(data_t *data);
-void value_c_flag(data_t *data);
+void processing_line(data_t *data, const char *line);
+void processing_h_flag(const data_t *data);
+void processing_n_flag(const data_t *data);
+void processing_c_flag(const data_t *data);
+void processing_o_flag(data_t *data, const char *line);
+void processing_l_c_flags(const data_t *data);
 void output(const char *line);
-void compiling_reg(data_t *data, int count_pattern);
-void compiling_reg_o(data_t *data, char *patterns);
-void value_o_flag(data_t *data, const char *line);
-size_t find_len_patterns(data_t *data);
-char *patterns_for_o(data_t *data, char *patterns_line);
+void compiling_reg(data_t *data, const char *patterns);
+size_t find_len_patterns(const data_t *data);
+char *patterns_for_o(const data_t *data, char *patterns_line);
 
 #endif

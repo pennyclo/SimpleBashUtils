@@ -1,4 +1,5 @@
 #!/bin/bash
+
 SUCCESS=0
 FAIL=0
 COUNTER=0
@@ -242,4 +243,3 @@ echo "FAILED: $FAIL"
 echo "SUCCESSFUL: $SUCCESS"
 echo "ALL: $COUNTER"
 printf "\n"
-##############################

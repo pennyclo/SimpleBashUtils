@@ -1,31 +1,25 @@
-#===============COMPILER===============
+#==================================COMPILER====================================
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -pedantic -std=c11
-# CFLAGS = -Wall -Wextra -pedantic -std=c11 -g
 
-#======================================
+#==============================================================================
 
-#===============FILES==================
+#==================================FILES=======================================
 
 ALL_FILES = *.c *.h
-EXCRETION = s21_grep
+EXECUTABLE = s21_grep
+SOURCES = main.c parser_args.c grep_flags.c
+OBJECTS = $(SOURCES:.c=.o)
 
-#======================================
+#==============================================================================
 
-#===============PATHS==================
+#================================TESTS_CHECK===================================
 
-TESTS_PATH = tests/
-VALTEST_PATH = -noe "\)" test_files/test_5_grep.txt
-
-#======================================
-
-#==============TESTS_CHECK=============
-
-CPPFLAGS = —enable=all —suppress=missingIncludeSystem
+CPPFLAGS = --enable=all --suppress=missingIncludeSystem
 CLANGFLAGS_N = -style=Google -n
 
-#======================================
+#==============================================================================
 
 cpp:
 	cppcheck $(CPPFLAGS) *.c
@@ -33,67 +27,58 @@ cpp:
 clang_check:
 	clang-format $(CLANGFLAGS_N) $(ALL_FILES)
 
-#================TESTS_VAL=================
+#==============================================================================
+
+#=================================TESTS_VAL====================================
 
 VALFLAGS = --tool=memcheck --leak-check=yes
-PATTERN = 
-FLAGS_TEST = 
+override PATTERN ?=
+override FLAGS_TEST ?=
+override VALTEST_PATH ?=
 
-#======================================
+#==============================================================================
 
-val: s21_grep
-	valgrind $(VALFLAGS)  ./$(EXCRETION) $(FLAGS_TEST) $(PATTERN) $(VALTEST_PATH)
+val: $(EXECUTABLE)
+	valgrind $(VALFLAGS) ./$(EXECUTABLE) $(FLAGS_TEST) $(PATTERN) $(VALTEST_PATH)
 
-#================TESTS_FILES=================
+#==============================================================================
 
-#test:
-#	bash $(TESTS_PATH)grep_tests.sh
+#================================TESTS_FILES===================================
 
 test:
 	bash tests.sh
 
 test_leaks:
 	bash test_leaks.sh
-#======================================
 
+#==============================================================================
 
-#===============BUILD==================
+#===================================BUILD======================================
 
 all: rebuild
 
-s21_grep: install
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(EXECUTABLE)
 
-install: main parser flags
-	$(CC) $(CFLAGS) main.o parser_args.o grep_flags.o -o s21_grep
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-main:
-	$(CC) $(CFLAGS) -c main.c
+rebuild: clean $(EXECUTABLE)
 
-parser:
-	$(CC) $(CFLAGS) -c parser_args.c
+#==============================================================================
 
-flags:
-	$(CC) $(CFLAGS) -c grep_flags.c
+#===================================CLEAN======================================
 
-rebuild: clean install
-
-#======================================
-
-#===============CLEAN==================
-
-clean: clean_excr clean.o
-
-clean_excr: 
-	rm -f $(EXCRETION)
+clean: clean.o
+	rm -f $(OBJECTS) $(EXECUTABLE)
 
 clean.o:
-	rm -f *.o *.log *.txt
+	rm -f *.log *.txt
 
-#======================================
+#==============================================================================
 
+#===================================PHONY======================================
 
-#===============PHONY==================
+.PHONY: all clean rebuild s21_grep
 
-.PHONY: s21_grep clean clean_excr clean.o
-
-#======================================
+#==============================================================================
