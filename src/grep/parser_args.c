@@ -1,22 +1,25 @@
 #include "parser_args.h"
 
 data_t parser(int argc, char **argv) {
-  data_t data = {.opt = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, .num_pattern = 0};
+  data_t data = {0};
   data.invalid = VALID;
+  data.patterns = NULL;
   int opt = 0;
 
   while ((opt = getopt(argc, argv, "e:ivclnhsf:o")) != -1) {
     switch_parser(opt, &data);
-
     if (data.opt.f && optarg) {
       parser_f_flags(&data, optarg);
     }
+
     if (data.opt.e && optarg) {
       alloc_parser(&data, optarg);
     }
   }
 
-  alloc_filepaths(&data, argc, argv);
+  if (!data.invalid) {
+    alloc_filepaths(&data, argc, argv);
+  }
 
   return data;
 }
@@ -35,11 +38,14 @@ void parser_f_flags(data_t *data, const char *patterns) {
       move_line(line_ptrn);
       alloc_parser(data, line_ptrn);
     }
+  } else {
+    fprintf(stderr, "grep: %s: No such file or directory\n", patterns);
+    data->invalid = NO_FILE;
   }
 
   if (file_patterns) {
-    fclose(file_patterns);
     free(line_ptrn);
+    fclose(file_patterns);
   }
 }
 
@@ -47,13 +53,13 @@ void alloc_parser(data_t *data, const char *optarg) {
   data->patterns =
       realloc(data->patterns, sizeof(char *) * (data->num_pattern + 1));
   if (!data->patterns) {
-    data->invalid = FILEPATH_ALLOC;  // rename later
+    data->invalid = ALLOC_PATTERN;
   }
 
   if (!data->invalid && optarg) {
     data->patterns[data->num_pattern] = strdup(optarg);
     if (!data->patterns[data->num_pattern]) {
-      data->invalid = FILEPATH_ALLOC;
+      data->invalid = ALLOC_PATTERN;
     }
   }
 
@@ -140,6 +146,7 @@ void alloc_filepaths(data_t *data, int argc, char **argv) {
 char *strdup(const char *str) {
   size_t length = strlen(str) + 1;
   char *new_str = malloc(length);
+
   if (new_str) {
     memcpy(new_str, str, length);
   }
@@ -157,11 +164,11 @@ void move_line(char *line) {
 char *alloc_patterns_o(data_t *data, size_t len_patterns) {
   char *patterns_line = malloc(len_patterns + 1);
 
-  if (patterns_line == NULL) {
+  if (patterns_line) {
+    patterns_line[0] = '\0';
+  } else {
     fprintf(stderr, "Memory allocation failed\n");
     data->invalid = ALLOC_PATTERN;
-  } else {
-    patterns_line[0] = '\0';
   }
 
   return patterns_line;

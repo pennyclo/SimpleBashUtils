@@ -19,6 +19,7 @@ typedef enum {
   ALLOC_PATTERN,
   REG_ERROR,
   UNKNOWN_OPT,
+  NO_FILE,
 } errors_t;
 
 typedef struct {

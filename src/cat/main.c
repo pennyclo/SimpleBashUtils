@@ -1,8 +1,9 @@
 #include "cat_flags.h"
 #include "parser_args.h"
 
-void reader(data_t *data, int *cnt_lines);
-void destroy_data(data_t *data);
+static void reader(data_t *data, int *cnt_lines);
+static void destroy_data(data_t *data);
+static void invalid_switch(data_t *data);
 
 int main(int argc, char **argv) {
   data_t data = parser(argc, argv);
@@ -21,7 +22,7 @@ int main(int argc, char **argv) {
   return 0;
 }
 
-void reader(data_t *data, int *cnt_lines) {
+static void reader(data_t *data, int *cnt_lines) {
   int i = 0;
 
   while (i < data->lenght) {
@@ -60,23 +61,26 @@ void reader(data_t *data, int *cnt_lines) {
   }
 }
 
-void destroy_data(data_t *data) {
+static void destroy_data(data_t *data) {
+  invalid_switch(data);
+
   if (data->file_paths) {
     for (int i = 0; i < data->num_files; i++) {
       if (data->file_paths[i]) {
         free(data->file_paths[i]);
+        data->file_paths[i] = NULL;
       }
     }
 
     free(data->file_paths);
+    data->file_paths = NULL;
   }
+}
 
+static void invalid_switch(data_t *data) {
   switch (data->invalid) {
     case UNKNOWN_OPT:
-      fprintf(
-          stderr,
-          "Try 'cat --help' for more information.\n");  // точно также как и в
-                                                        // оригинальном cat.
+      fprintf(stderr, "Try 'cat --help' for more information.\n");
       break;
     case FILEPATH_ALLOC:
       fprintf(stderr, "Error allocating file path\n");

@@ -22,7 +22,7 @@ CLANGFLAGS_N = -style=Google -n
 #==============================================================================
 
 cpp:
-	cppcheck $(CPPFLAGS) *.c *.h
+	cppcheck $(CPPFLAGS) $(ALL_FILES)
 
 clang_check:
 	clang-format $(CLANGFLAGS_N) $(ALL_FILES)
@@ -31,7 +31,7 @@ clang_check:
 
 #=================================TESTS_VAL====================================
 
-VALFLAGS = --tool=memcheck --leak-check=yes
+VALFLAGS = --tool=memcheck --leak-check=yes --track-origins=yes
 override PATTERN ?=
 override FLAGS_TEST ?=
 override VALTEST_PATH ?=
@@ -46,10 +46,10 @@ val: $(EXECUTABLE)
 #================================TESTS_FILES===================================
 
 test:
-	bash tests.sh
+	bash tests/tests.sh
 
 test_leaks:
-	bash test_leaks.sh
+	bash tests/test_leaks.sh
 
 #==============================================================================
 

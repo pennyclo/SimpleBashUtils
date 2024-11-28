@@ -1,30 +1,47 @@
-SHELL := /bin/bash
+#==================================COMPILER====================================
+
 CC = gcc
-CFLAGS =-Wextra -Wall -pedantic -std=c11
-EXCRETION = s21_cat
-FLAGS_TEST = -n -b -s -v -T -E
-TEST_PATH = tests/tests_files/test_1_cat.txt tests/tests_files/nofile.txt tests/tests_files/test_2_cat.txt
-FILE = test/test.txt
+CFLAGS = -Werror -Wextra -Wall -pedantic -std=c11
+
+#==============================================================================
+
+#===================================FILES======================================
+
 ALL_FILES = *.c *.h
+EXECUTABLE = s21_cat
+SOURCES = main.c cat_flags.c parser_args.c
+OBJECTS = $(SOURCES:.c=.o)
+TESTS = tests/tests_cat.sh
 
-all: s21_cat clean.o
+#==============================================================================
 
-install: s21_cat
+#================================TESTS_CHECK===================================
 
-s21_cat: main parser_args cat_flags
-	$(CC) $(CFLAGS) main.o parser_args.o cat_flags.o -o s21_cat
+VAL_FLAGS = --tool=memcheck --leak-check=yes --track-origins=yes
+FLAGS_TEST ?= 
+TEST_PATH ?=  
+FILE = test/test.txt
 
-main:
-	$(CC) $(CFLAGS) -c main.c
+#==============================================================================
 
-parser_args:
-	$(CC) $(CFLAGS) -c parser_args.c
+#===================================BUILD======================================
 
-cat_flags:
-	$(CC) $(CFLAGS) -c cat_flags.c
+all: rebuild
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(EXECUTABLE)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+rebuild: clean $(EXECUTABLE)
+
+#==============================================================================
+
+#===================================CLEAN======================================
 
 clean: clean.o clean.log
-	rm -rf $(EXCRETION) analysis/*
+	rm -rf $(EXECUTABLE) analysis/*
 
 clean.o:
 	rm -rf *.o
@@ -32,17 +49,24 @@ clean.o:
 clean.log:
 	rm -rf tests/tests_log/*
 
-rebuild: clean install
+#==============================================================================
 
-val: s21_cat
-	valgrind --tool=memcheck --leak-check=yes  ./$(EXCRETION) $(FLAGS_TEST) $(TEST_PATH)
+#=================================TESTS_VAL====================================
+
+val: $(EXECUTABLE)
+	valgrind $(VAL_FLAGS) ./$(EXECUTABLE) $(FLAGS_TEST) $(TEST_PATH)
+
+#==============================================================================
+
+#================================TESTS_CHECK===================================
 
 cpp:
-	cppcheck --enable=all --suppress=missingIncludeSystem *.c *.h
-
+	cppcheck --enable=all --suppress=missingIncludeSystem $(ALL_FILES)
 
 test:
-	bash tests_cat.sh
+	bash $(TESTS)
 
 clang_check:
 	clang-format -style=Google -n $(ALL_FILES)
+
+#==============================================================================

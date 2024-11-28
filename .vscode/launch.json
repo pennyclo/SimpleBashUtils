@@ -5,8 +5,11 @@
             "name": "Debug C/C++",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/s21_grep",
-            "args": [],
+            "program": "${workspaceFolder}/src/grep/s21_grep",
+            "args": [
+                "for",
+                "-e"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -18,7 +21,7 @@
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 }
-            ],
+            ]
         }
     ]
 }
