@@ -3,7 +3,7 @@
 
 static void reader(data_t *data, int *cnt_lines);
 static void destroy_data(data_t *data);
-static void invalid_switch(data_t *data);
+static void invalid_switch(const data_t *data);
 
 int main(int argc, char **argv) {
   data_t data = parser(argc, argv);
@@ -77,7 +77,7 @@ static void destroy_data(data_t *data) {
   }
 }
 
-static void invalid_switch(data_t *data) {
+static void invalid_switch(const data_t *data) {
   switch (data->invalid) {
     case UNKNOWN_OPT:
       fprintf(stderr, "Try 'cat --help' for more information.\n");
