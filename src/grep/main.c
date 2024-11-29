@@ -2,7 +2,7 @@
 #include "parser_args.h"
 
 static void destroy(data_t *data);
-static void invalid_switch(data_t *data);
+static void invalid_switch(const data_t *data);
 
 int main(int argc, char **argv) {
   if (argc > 2) {
@@ -53,7 +53,7 @@ static void destroy(data_t *data) {
   }
 }
 
-static void invalid_switch(data_t *data) {
+static void invalid_switch(const data_t *data) {
   switch (data->invalid) {
     case 1:
       fprintf(stderr, "Error allocated memory for file paths");
